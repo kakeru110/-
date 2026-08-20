@@ -30,21 +30,49 @@ const PERSONALITY_LABELS = [
   "かなり良好",
 ];
 
-const JOB_TIERS = [
+const MALE_JOB_TIERS = [
   { value: "student", label: "学生・無職・その他", points: 2 },
   { value: "nonregular", label: "契約・派遣・非正規", points: 5 },
-  { value: "freelance", label: "自営業・フリーランス", points: 8 },
-  { value: "sme", label: "中小企業正社員", points: 9 },
-  { value: "midsize", label: "中堅企業正社員", points: 12 },
-  { value: "top", label: "大企業・公務員・士業（医師・弁護士等）", points: 15 },
+  { value: "freelance", label: "自営業・フリーランス", points: 7 },
+  { value: "sme", label: "中小企業正社員（一般職）", points: 9 },
+  { value: "corporate", label: "大手・中堅企業（総合職）", points: 11 },
+  { value: "public", label: "公務員・教員", points: 12 },
+  { value: "specialist", label: "医師・士業（弁護士・会計士等）", points: 15 },
 ];
+
+const FEMALE_JOB_TIERS = [
+  { value: "student", label: "学生・無職・その他", points: 2 },
+  { value: "nonregular", label: "契約・派遣・非正規（事務・販売等）", points: 4 },
+  { value: "sme", label: "中小企業正社員（一般事務等）", points: 5 },
+  { value: "corporate", label: "大手企業総合職・公務員・教員", points: 7 },
+  { value: "specialist", label: "看護師・薬剤師などの専門職", points: 8 },
+  { value: "glamour", label: "客室乗務員（CA）・アナウンサー・医師/士業", points: 10 },
+];
+
+// 年齢は加点だけでなく、最終スコア全体への倍率としても効かせる。
+// 「他の項目がどれだけ高くても、理想的な年齢層から離れるほど頭打ちになる」という
+// 婚活市場でよく言われる傾向を表現するための係数。
+const AGE_MULTIPLIER = {
+  male: { windowLo: 26, windowHi: 38, sigmaLo: 9, sigmaHi: 11, floor: 0.4 },
+  female: { windowLo: 22, windowHi: 29, sigmaLo: 6, sigmaHi: 10, floor: 0.35 },
+};
+
+function ageMultiplier(genderKey, age) {
+  const cfg = AGE_MULTIPLIER[genderKey];
+  const a = Number(age) || 0;
+  if (a >= cfg.windowLo && a <= cfg.windowHi) return 1;
+  if (a < cfg.windowLo) {
+    return cfg.floor + (1 - cfg.floor) * Math.exp(-((cfg.windowLo - a) ** 2) / (2 * cfg.sigmaLo * cfg.sigmaLo));
+  }
+  return cfg.floor + (1 - cfg.floor) * Math.exp(-((a - cfg.windowHi) ** 2) / (2 * cfg.sigmaHi * cfg.sigmaHi));
+}
 
 const CATEGORIES = {
   male: [
     { key: "income", label: "年収", type: "income", cap: 35, max: 35, k: 700, unit: "万円", plausible: [0, 10000] },
     { key: "age", label: "年齢", type: "gaussian", max: 15, floor: 5, peak: 30, sigma: 12, unit: "歳", plausible: [20, 70] },
     { key: "height", label: "身長", type: "gaussian", max: 15, floor: 3, peak: 178, sigma: 10, unit: "cm", plausible: [150, 200] },
-    { key: "job", label: "職業・雇用形態", type: "discrete", max: 15, tiers: JOB_TIERS },
+    { key: "job", label: "職業・雇用形態", type: "discrete", max: 15, tiers: MALE_JOB_TIERS },
     { key: "appearance", label: "顔立ち", type: "slider", max: 10, labels: APPEARANCE_LABELS },
     { key: "body", label: "体型", type: "slider", max: 5, labels: BODY_LABELS },
     { key: "personality", label: "性格・コミュ力", type: "slider", max: 5, labels: PERSONALITY_LABELS },
@@ -52,10 +80,11 @@ const CATEGORIES = {
   female: [
     { key: "age", label: "年齢", type: "gaussian", max: 30, floor: 4, peak: 25, sigma: 7, unit: "歳", plausible: [20, 60] },
     { key: "appearance", label: "顔立ち", type: "slider", max: 20, labels: APPEARANCE_LABELS },
-    { key: "body", label: "体型", type: "slider", max: 15, labels: BODY_LABELS },
+    { key: "body", label: "体型", type: "slider", max: 10, labels: BODY_LABELS },
     { key: "height", label: "身長", type: "gaussian", max: 5, floor: 2, peak: 162, sigma: 12, unit: "cm", plausible: [140, 185] },
     { key: "income", label: "年収", type: "income", cap: 10, max: 10, k: 500, unit: "万円", plausible: [0, 10000] },
-    { key: "personality", label: "性格・家庭的な面", type: "slider", max: 20, labels: PERSONALITY_LABELS },
+    { key: "job", label: "職業・雇用形態", type: "discrete", max: 10, tiers: FEMALE_JOB_TIERS },
+    { key: "personality", label: "性格・家庭的な面", type: "slider", max: 15, labels: PERSONALITY_LABELS },
   ],
 };
 
@@ -84,14 +113,16 @@ function scoreCategory(cat, rawValue) {
 
 function scoreProfile(genderKey, values) {
   const cats = CATEGORIES[genderKey];
-  let total = 0;
+  let rawTotal = 0;
   const breakdown = [];
   cats.forEach((cat) => {
     const points = scoreCategory(cat, values[cat.key]);
-    total += points;
+    rawTotal += points;
     breakdown.push({ ...cat, points, ratio: points / cat.max });
   });
-  return { total: Math.round(total * 10) / 10, breakdown };
+  const multiplier = ageMultiplier(genderKey, values.age);
+  const total = Math.round(rawTotal * multiplier * 10) / 10;
+  return { total, rawTotal: Math.round(rawTotal * 10) / 10, multiplier, breakdown };
 }
 
 function rankOf(score) {
@@ -192,10 +223,15 @@ function readForm(prefix) {
   };
 }
 
-function toggleJobRow(prefix) {
+function populateJobOptions(prefix) {
   const gender = document.querySelector(`input[name="${prefix}-gender"]:checked`).value;
-  const row = document.getElementById(`${prefix}-job-row`);
-  row.hidden = gender !== "male";
+  const select = document.getElementById(`${prefix}-job`);
+  const tiers = CATEGORIES[gender].find((cat) => cat.key === "job").tiers;
+  const previousValue = select.value;
+  select.innerHTML = tiers.map((t) => `<option value="${t.value}">${t.label}</option>`).join("");
+  select.value = tiers.some((t) => t.value === previousValue)
+    ? previousValue
+    : tiers[Math.floor(tiers.length / 2)].value;
 }
 
 function updateWeightBadges(prefix) {
@@ -253,10 +289,17 @@ function updatePartnerLiveLabels() {
     PERSONALITY_LABELS[document.getElementById("partner-personality").value - 1];
 }
 
+function renderMultiplierNote(elementId, rawTotal, multiplier, total) {
+  const el = document.getElementById(elementId);
+  el.textContent =
+    `基礎点 ${rawTotal.toFixed(1)}点 × 年齢による総合倍率 ${multiplier.toFixed(2)} ` +
+    `＝ 最終 ${total.toFixed(1)}点`;
+}
+
 function handleSelfSubmit(e) {
   e.preventDefault();
   const { gender, values } = readForm("self");
-  const { total, breakdown } = scoreProfile(gender, values);
+  const { total, rawTotal, multiplier, breakdown } = scoreProfile(gender, values);
   ownScoreState = total;
   ownGenderState = gender;
 
@@ -265,6 +308,7 @@ function handleSelfSubmit(e) {
   document.getElementById("self-rank-label").textContent = rank.label;
   document.getElementById("self-rank-desc").textContent = rank.desc;
   renderBreakdown(document.getElementById("self-breakdown"), breakdown);
+  renderMultiplierNote("self-multiplier-note", rawTotal, multiplier, total);
   document.getElementById("self-result").hidden = false;
 
   // 相手の性別デフォルトを異性に、パートナーフォームを表示
@@ -273,7 +317,7 @@ function handleSelfSubmit(e) {
   );
   if (partnerGenderInput) {
     partnerGenderInput.checked = true;
-    toggleJobRow("partner");
+    populateJobOptions("partner");
     updateWeightBadges("partner");
   }
   document.getElementById("partner-section").hidden = false;
@@ -286,13 +330,14 @@ function handlePartnerSubmit(e) {
   e.preventDefault();
   if (ownScoreState === null) return;
   const { gender, values } = readForm("partner");
-  const { total, breakdown } = scoreProfile(gender, values);
+  const { total, rawTotal, multiplier, breakdown } = scoreProfile(gender, values);
 
   const rank = rankOf(total);
   document.getElementById("partner-score-value").textContent = total.toFixed(1);
   document.getElementById("partner-rank-label").textContent = rank.label;
   document.getElementById("partner-rank-desc").textContent = rank.desc;
   renderBreakdown(document.getElementById("partner-breakdown"), breakdown);
+  renderMultiplierNote("partner-multiplier-note", rawTotal, multiplier, total);
 
   const diff = Math.round((ownScoreState - total) * 10) / 10;
   const v = verdictOf(diff);
@@ -325,13 +370,13 @@ function renderSuggestion() {
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('input[name="self-gender"]').forEach((el) =>
     el.addEventListener("change", () => {
-      toggleJobRow("self");
+      populateJobOptions("self");
       updateWeightBadges("self");
     })
   );
   document.querySelectorAll('input[name="partner-gender"]').forEach((el) =>
     el.addEventListener("change", () => {
-      toggleJobRow("partner");
+      populateJobOptions("partner");
       updateWeightBadges("partner");
     })
   );
@@ -345,8 +390,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("self-form").addEventListener("submit", handleSelfSubmit);
   document.getElementById("partner-form").addEventListener("submit", handlePartnerSubmit);
 
-  toggleJobRow("self");
-  toggleJobRow("partner");
+  populateJobOptions("self");
+  populateJobOptions("partner");
   updateWeightBadges("self");
   updateWeightBadges("partner");
   updateSelfLiveLabels();
