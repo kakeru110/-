@@ -14,6 +14,14 @@ const APPEARANCE_LABELS = [
   "かなり整っている",
 ];
 
+const BODY_LABELS = [
+  "ふくよか",
+  "ややふくよか",
+  "普通体型",
+  "引き締まっている",
+  "スレンダー・スタイル良い",
+];
+
 const PERSONALITY_LABELS = [
   "かなり要努力",
   "やや要努力",
@@ -37,15 +45,17 @@ const CATEGORIES = {
     { key: "age", label: "年齢", type: "gaussian", max: 15, floor: 5, peak: 30, sigma: 12, unit: "歳", plausible: [20, 70] },
     { key: "height", label: "身長", type: "gaussian", max: 15, floor: 3, peak: 178, sigma: 10, unit: "cm", plausible: [150, 200] },
     { key: "job", label: "職業・雇用形態", type: "discrete", max: 15, tiers: JOB_TIERS },
-    { key: "appearance", label: "外見", type: "slider", max: 15, labels: APPEARANCE_LABELS },
+    { key: "appearance", label: "顔立ち", type: "slider", max: 10, labels: APPEARANCE_LABELS },
+    { key: "body", label: "体型", type: "slider", max: 5, labels: BODY_LABELS },
     { key: "personality", label: "性格・コミュ力", type: "slider", max: 5, labels: PERSONALITY_LABELS },
   ],
   female: [
     { key: "age", label: "年齢", type: "gaussian", max: 30, floor: 4, peak: 25, sigma: 7, unit: "歳", plausible: [20, 60] },
-    { key: "appearance", label: "外見", type: "slider", max: 30, labels: APPEARANCE_LABELS },
-    { key: "height", label: "身長", type: "gaussian", max: 15, floor: 4, peak: 162, sigma: 9, unit: "cm", plausible: [140, 185] },
+    { key: "appearance", label: "顔立ち", type: "slider", max: 20, labels: APPEARANCE_LABELS },
+    { key: "body", label: "体型", type: "slider", max: 15, labels: BODY_LABELS },
+    { key: "height", label: "身長", type: "gaussian", max: 5, floor: 2, peak: 162, sigma: 12, unit: "cm", plausible: [140, 185] },
     { key: "income", label: "年収", type: "income", cap: 10, max: 10, k: 500, unit: "万円", plausible: [0, 10000] },
-    { key: "personality", label: "性格・家庭的な面", type: "slider", max: 15, labels: PERSONALITY_LABELS },
+    { key: "personality", label: "性格・家庭的な面", type: "slider", max: 20, labels: PERSONALITY_LABELS },
   ],
 };
 
@@ -176,6 +186,7 @@ function readForm(prefix) {
       height: document.getElementById(`${prefix}-height`).value,
       job: document.getElementById(`${prefix}-job`).value,
       appearance: document.getElementById(`${prefix}-appearance`).value,
+      body: document.getElementById(`${prefix}-body`).value,
       personality: document.getElementById(`${prefix}-personality`).value,
     },
   };
@@ -193,7 +204,7 @@ function updateWeightBadges(prefix) {
   CATEGORIES[gender].forEach((cat) => {
     weightByKey[cat.key] = cat.max;
   });
-  ["age", "height", "income", "job", "appearance", "personality"].forEach((key) => {
+  ["age", "height", "income", "job", "appearance", "body", "personality"].forEach((key) => {
     const badge = document.getElementById(`${prefix}-${key}-weight`);
     if (!badge) return;
     if (weightByKey[key] !== undefined) {
@@ -227,6 +238,8 @@ let ownGenderState = null;
 function updateSelfLiveLabels() {
   document.getElementById("self-appearance-value").textContent =
     APPEARANCE_LABELS[document.getElementById("self-appearance").value - 1];
+  document.getElementById("self-body-value").textContent =
+    BODY_LABELS[document.getElementById("self-body").value - 1];
   document.getElementById("self-personality-value").textContent =
     PERSONALITY_LABELS[document.getElementById("self-personality").value - 1];
 }
@@ -234,6 +247,8 @@ function updateSelfLiveLabels() {
 function updatePartnerLiveLabels() {
   document.getElementById("partner-appearance-value").textContent =
     APPEARANCE_LABELS[document.getElementById("partner-appearance").value - 1];
+  document.getElementById("partner-body-value").textContent =
+    BODY_LABELS[document.getElementById("partner-body").value - 1];
   document.getElementById("partner-personality-value").textContent =
     PERSONALITY_LABELS[document.getElementById("partner-personality").value - 1];
 }
@@ -321,8 +336,10 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   );
   document.getElementById("self-appearance").addEventListener("input", updateSelfLiveLabels);
+  document.getElementById("self-body").addEventListener("input", updateSelfLiveLabels);
   document.getElementById("self-personality").addEventListener("input", updateSelfLiveLabels);
   document.getElementById("partner-appearance").addEventListener("input", updatePartnerLiveLabels);
+  document.getElementById("partner-body").addEventListener("input", updatePartnerLiveLabels);
   document.getElementById("partner-personality").addEventListener("input", updatePartnerLiveLabels);
 
   document.getElementById("self-form").addEventListener("submit", handleSelfSubmit);

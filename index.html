@@ -36,8 +36,8 @@
     <p class="eyebrow">SCORING WEIGHTS</p>
     <h2>配点表 — 男女で異なる重み付け</h2>
     <p class="hint">
-      「男性は経済力、女性は年齢・外見が重視されやすい」という婚活市場の一般的な傾向を踏まえ、
-      同じ項目でも男女で配点（重要度）を変えています。
+      「男性は経済力、女性は年齢・外見が重視されやすい」という婚活市場の一般的な傾向を踏まえて配点しています。
+      また「外見」は顔立ちと体型で評価軸が異なるため、両方を分けて算入します（身長は女性では相対的に重視度が低いため小さめの配点です）。
     </p>
     <div class="weight-table-wrap">
       <table class="weight-table">
@@ -51,10 +51,11 @@
         <tbody>
           <tr><th scope="row">年収</th><td>35点</td><td>10点</td></tr>
           <tr><th scope="row">年齢</th><td>15点</td><td>30点</td></tr>
-          <tr><th scope="row">外見</th><td>15点</td><td>30点</td></tr>
-          <tr><th scope="row">身長</th><td>15点</td><td>15点</td></tr>
+          <tr><th scope="row">顔立ち</th><td>10点</td><td>20点</td></tr>
+          <tr><th scope="row">体型</th><td>5点</td><td>15点</td></tr>
+          <tr><th scope="row">身長</th><td>15点</td><td>5点</td></tr>
           <tr><th scope="row">職業・雇用形態</th><td>15点</td><td>—</td></tr>
-          <tr><th scope="row">性格・家庭的な面</th><td>5点</td><td>15点</td></tr>
+          <tr><th scope="row">性格・家庭的な面</th><td>5点</td><td>20点</td></tr>
         </tbody>
         <tfoot>
           <tr><th scope="row">合計</th><td>100点</td><td>100点</td></tr>
@@ -102,8 +103,13 @@
       </label>
 
       <label class="field">
-        <span>外見の自己評価: <b id="self-appearance-value"></b> <span class="field-weight" id="self-appearance-weight"></span></span>
+        <span>顔立ちの自己評価: <b id="self-appearance-value"></b> <span class="field-weight" id="self-appearance-weight"></span></span>
         <input type="range" id="self-appearance" min="1" max="5" value="3">
+      </label>
+
+      <label class="field">
+        <span>体型の自己評価: <b id="self-body-value"></b> <span class="field-weight" id="self-body-weight"></span></span>
+        <input type="range" id="self-body" min="1" max="5" value="3">
       </label>
 
       <label class="field">
@@ -180,8 +186,13 @@
       </label>
 
       <label class="field">
-        <span>希望する外見レベル: <b id="partner-appearance-value"></b> <span class="field-weight" id="partner-appearance-weight"></span></span>
+        <span>希望する顔立ちレベル: <b id="partner-appearance-value"></b> <span class="field-weight" id="partner-appearance-weight"></span></span>
         <input type="range" id="partner-appearance" min="1" max="5" value="3">
+      </label>
+
+      <label class="field">
+        <span>希望する体型レベル: <b id="partner-body-value"></b> <span class="field-weight" id="partner-body-weight"></span></span>
+        <input type="range" id="partner-body" min="1" max="5" value="3">
       </label>
 
       <label class="field">
