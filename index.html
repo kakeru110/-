@@ -3,25 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>婚活市場価値診断（エンタメ版）</title>
+<title>婚活市場価値 査定書</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="page-header">
-  <h1>婚活市場価値診断</h1>
-  <p class="subtitle">自分の市場価値と、求める条件の釣り合いをチェックする簡易ツール</p>
-</header>
+<div class="sheet">
 
-<main class="container">
+  <header class="masthead">
+    <div class="seal-mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" width="40" height="40">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="32" cy="32" r="23" fill="none" stroke="currentColor" stroke-width="1"/>
+        <path d="M32 20 L36 29 L46 30 L38.5 37 L40.5 47 L32 42 L23.5 47 L25.5 37 L18 30 L28 29 Z" fill="currentColor"/>
+      </svg>
+    </div>
+    <p class="masthead-eyebrow">MARKET VALUE APPRAISAL</p>
+    <h1>婚活市場価値 査定書</h1>
+    <p class="subtitle">自分の市場価値と、相手に求める条件の釣り合いを算定します</p>
+  </header>
+
   <section class="disclaimer">
-    <strong>注意:</strong>
-    このツールはネット上でよく言われる「婚活市場での傾向」を元にした簡易的な計算で遊ぶエンタメコンテンツです。
-    統計的・科学的な根拠はなく、人の価値や相性を測るものではありません。話のネタとしてお楽しみください。
+    <strong>本査定書について:</strong>
+    ネット上でよく言われる「婚活市場での傾向」を元にした簡易計算によるエンタメコンテンツです。
+    統計的・科学的な根拠はなく、人の価値や相性を保証・評価するものではありません。話のネタとしてお楽しみください。
   </section>
 
   <!-- STEP 1: 自分の市場価値診断 -->
   <section class="card">
-    <h2>STEP 1. あなたの市場価値を診断</h2>
+    <p class="eyebrow">STEP 1</p>
+    <h2>あなたの市場価値を診断</h2>
     <form id="self-form">
       <fieldset class="field">
         <legend>性別</legend>
@@ -71,11 +84,17 @@
   </section>
 
   <section class="card result-card" id="self-result" hidden>
+    <p class="eyebrow">RESULT</p>
     <h2>あなたの市場価値スコア</h2>
     <div class="score-headline">
-      <span class="score-number" id="self-score-value">-</span>
-      <span class="score-suffix">/ 100点</span>
-      <span class="rank-badge" id="self-rank-label">-</span>
+      <div class="score-figure">
+        <span class="score-number" id="self-score-value">-</span>
+        <span class="score-suffix">/ 100点</span>
+      </div>
+      <div class="rank-seal">
+        <span class="rank-badge" id="self-rank-label">-</span>
+        <span class="rank-seal-label">RANK</span>
+      </div>
     </div>
     <p class="rank-desc" id="self-rank-desc"></p>
     <div class="breakdown" id="self-breakdown"></div>
@@ -83,14 +102,16 @@
 
   <!-- 自分のスコアに見合う相手条件の目安 -->
   <section class="card result-card" id="suggestion-result" hidden>
-    <h2>あなたのスコア（<span id="suggestion-score">-</span>点）に見合う相手条件の目安</h2>
+    <p class="eyebrow">APPRAISED MATCH</p>
+    <h2>スコア（<span id="suggestion-score">-</span>点）に見合う相手条件の目安</h2>
     <p class="hint">同じくらいの「市場価値の釣り合い」になりやすい、一般的な相手条件の目安です。</p>
     <ul class="suggestion-list" id="suggestion-list"></ul>
   </section>
 
   <!-- STEP 2: 相手に求める条件 -->
   <section class="card" id="partner-section" hidden>
-    <h2>STEP 2. 相手に求める条件を入力</h2>
+    <p class="eyebrow">STEP 2</p>
+    <h2>相手に求める条件を入力</h2>
     <p class="hint">例えば「年収5000万円以上を希望」なら、年収欄に5000と入力してください。</p>
     <form id="partner-form">
       <fieldset class="field">
@@ -141,11 +162,17 @@
   </section>
 
   <section class="card result-card" id="partner-result" hidden>
+    <p class="eyebrow">RESULT</p>
     <h2>求める条件のスコア</h2>
     <div class="score-headline">
-      <span class="score-number" id="partner-score-value">-</span>
-      <span class="score-suffix">/ 100点</span>
-      <span class="rank-badge" id="partner-rank-label">-</span>
+      <div class="score-figure">
+        <span class="score-number" id="partner-score-value">-</span>
+        <span class="score-suffix">/ 100点</span>
+      </div>
+      <div class="rank-seal">
+        <span class="rank-badge" id="partner-rank-label">-</span>
+        <span class="rank-seal-label">RANK</span>
+      </div>
     </div>
     <p class="rank-desc" id="partner-rank-desc"></p>
     <div class="breakdown" id="partner-breakdown"></div>
@@ -154,10 +181,10 @@
   </section>
 
   <footer class="page-footer">
-    <p>© 婚活市場価値診断（エンタメ版）。本ツールの算出結果は目安であり、個人の価値や相性を保証・評価するものではありません。</p>
+    <p>婚活市場価値 査定書（エンタメ版）。本ツールの算出結果は目安であり、個人の価値や相性を保証・評価するものではありません。</p>
   </footer>
-</main>
 
+</div>
 <script src="app.js"></script>
 </body>
 </html>

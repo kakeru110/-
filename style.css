@@ -1,19 +1,63 @@
 :root {
-  --bg: #fdf6f8;
-  --card-bg: #ffffff;
-  --text: #2c2230;
-  --muted: #7a6f77;
-  --accent: #d6558c;
-  --accent-dark: #b23d6f;
-  --accent-light: #f7d9e6;
-  --border: #ecdfe4;
-  --good: #2f9e5b;
-  --good-bg: #e6f6ec;
-  --warn: #b8860b;
-  --warn-bg: #fbf1dc;
-  --bad: #c9414f;
-  --bad-bg: #fbe6e8;
-  --radius: 14px;
+  --paper: #fbf7f6;
+  --surface: #ffffff;
+  --ink: #241c2c;
+  --ink-muted: #6b5f6c;
+  --rule: #e4dce1;
+  --rule-strong: #d3c5cc;
+  --accent: #9c2f52;
+  --accent-soft: #f4dde4;
+  --gold: #a9822f;
+  --gold-soft: #f1e6cc;
+  --good: #2e7d4f;
+  --good-bg: #e5f2e9;
+  --warn: #b8791f;
+  --warn-bg: #f8ecd8;
+  --bad: #b23a3a;
+  --bad-bg: #f8e3e1;
+  --shadow: rgba(36, 28, 44, 0.07);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #17121a;
+    --surface: #211a24;
+    --ink: #f1e7ec;
+    --ink-muted: #b6a6b4;
+    --rule: #3a2e39;
+    --rule-strong: #4a3c48;
+    --accent: #e58fb0;
+    --accent-soft: #3a2430;
+    --gold: #d9b66b;
+    --gold-soft: #362c1f;
+    --good: #6bc78f;
+    --good-bg: #1c2f22;
+    --warn: #dcb15c;
+    --warn-bg: #332a17;
+    --bad: #e08080;
+    --bad-bg: #362021;
+    --shadow: rgba(0, 0, 0, 0.35);
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper: #17121a;
+  --surface: #211a24;
+  --ink: #f1e7ec;
+  --ink-muted: #b6a6b4;
+  --rule: #3a2e39;
+  --rule-strong: #4a3c48;
+  --accent: #e58fb0;
+  --accent-soft: #3a2430;
+  --gold: #d9b66b;
+  --gold-soft: #362c1f;
+  --good: #6bc78f;
+  --good-bg: #1c2f22;
+  --warn: #dcb15c;
+  --warn-bg: #332a17;
+  --bad: #e08080;
+  --bad-bg: #362021;
+  --shadow: rgba(0, 0, 0, 0.35);
 }
 
 * {
@@ -22,71 +66,123 @@
 
 body {
   margin: 0;
-  font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
-  background: linear-gradient(180deg, #fff5f8 0%, var(--bg) 100%);
-  color: var(--text);
+  padding: 2.5rem 1rem 4rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "IBM Plex Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
   line-height: 1.7;
 }
 
-.page-header {
-  text-align: center;
-  padding: 2.5rem 1rem 1.5rem;
+.sheet {
+  max-width: 640px;
+  margin: 0 auto;
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  padding: 2.4rem 2rem 2.6rem;
+  background: var(--surface);
+  box-shadow: 0 18px 40px -20px var(--shadow);
 }
 
-.page-header h1 {
-  margin: 0 0 0.4rem;
-  font-size: 1.8rem;
-  color: var(--accent-dark);
+@media (max-width: 560px) {
+  .sheet {
+    padding: 1.8rem 1.1rem 2rem;
+  }
+}
+
+/* ---------------------------- Masthead ---------------------------- */
+
+.masthead {
+  text-align: center;
+  padding-bottom: 1.8rem;
+  margin-bottom: 1.8rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.seal-mark {
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+
+.masthead-eyebrow {
+  margin: 0 0 0.5rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.masthead h1 {
+  margin: 0 0 0.5rem;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: 2rem;
+  text-wrap: balance;
+  color: var(--ink);
 }
 
 .subtitle {
   margin: 0;
-  color: var(--muted);
+  color: var(--ink-muted);
   font-size: 0.95rem;
 }
 
-.container {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 0 1rem 3rem;
-}
+/* --------------------------- Disclaimer ---------------------------- */
 
 .disclaimer {
-  background: var(--accent-light);
+  background: var(--accent-soft);
   border: 1px solid var(--accent);
-  border-radius: var(--radius);
+  border-radius: 8px;
   padding: 0.9rem 1.1rem;
   font-size: 0.85rem;
-  color: var(--accent-dark);
-  margin-bottom: 1.5rem;
+  color: var(--ink);
+  margin-bottom: 1.6rem;
 }
 
+.disclaimer strong {
+  color: var(--accent);
+}
+
+/* ------------------------------ Cards ------------------------------ */
+
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 14px rgba(214, 85, 140, 0.06);
+  border-top: 1px solid var(--rule);
+  padding-top: 1.6rem;
+  margin-bottom: 1.8rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.3rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-muted);
+  text-transform: uppercase;
 }
 
 .card h2 {
-  margin-top: 0;
-  font-size: 1.15rem;
-  color: var(--accent-dark);
+  margin: 0 0 1.1rem;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.28rem;
+  color: var(--ink);
+  text-wrap: balance;
 }
 
 .hint {
   font-size: 0.85rem;
-  color: var(--muted);
-  margin-top: -0.5rem;
+  color: var(--ink-muted);
+  margin-top: -0.6rem;
+  margin-bottom: 1.1rem;
 }
+
+/* ------------------------------ Fields ------------------------------ */
 
 .field {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
   border: none;
   padding: 0;
 }
@@ -94,29 +190,39 @@ body {
 .field legend {
   padding: 0;
   font-weight: 600;
+  font-size: 0.92rem;
 }
 
 .field label {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  margin-right: 1rem;
+  margin-right: 1.2rem;
   font-weight: normal;
 }
 
-.field span {
+.field > span {
   font-weight: 600;
   font-size: 0.92rem;
 }
 
 input[type="number"],
 select {
-  padding: 0.55rem 0.7rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
   font-size: 1rem;
-  background: #fff;
-  color: var(--text);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "IBM Plex Mono", monospace;
+}
+
+input[type="number"]:focus,
+select:focus,
+input[type="range"]:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 input[type="range"] {
@@ -126,89 +232,140 @@ input[type="range"] {
 .btn-primary {
   width: 100%;
   padding: 0.85rem;
-  border: none;
+  border: 1px solid var(--accent);
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-  color: #fff;
+  background: var(--accent);
+  color: var(--surface);
+  font-family: "IBM Plex Sans JP", sans-serif;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  margin-top: 0.5rem;
+  margin-top: 0.6rem;
+  transition: filter 0.15s ease;
 }
 
 .btn-primary:hover {
-  filter: brightness(1.05);
+  filter: brightness(1.08);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary {
+    transition: none;
+  }
+}
+
+/* ----------------------------- Results ------------------------------ */
+
 .result-card {
-  border-color: var(--accent-light);
+  background: linear-gradient(180deg, var(--gold-soft), transparent 40%);
+  border-top-color: var(--gold);
+  border-radius: 8px;
+  padding: 1.6rem 1.4rem 1.4rem;
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
 }
 
 .score-headline {
   display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
+.score-figure {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
 .score-number {
-  font-size: 2.6rem;
-  font-weight: 800;
-  color: var(--accent-dark);
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
 }
 
 .score-suffix {
-  color: var(--muted);
+  color: var(--ink-muted);
   font-size: 1rem;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.rank-seal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
 }
 
 .rank-badge {
-  margin-left: auto;
-  background: var(--accent-dark);
-  color: #fff;
-  font-weight: 800;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 1.1rem;
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px var(--gold);
+  color: var(--gold);
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.rank-seal-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-muted);
 }
 
 .rank-desc {
-  color: var(--muted);
-  margin-top: 0.2rem;
+  color: var(--ink-muted);
+  margin-top: 0.5rem;
+  margin-bottom: 0;
 }
 
 .breakdown {
-  margin-top: 1.2rem;
+  margin-top: 1.3rem;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.75rem;
 }
 
 .bar-row {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.28rem;
 }
 
 .bar-label {
   display: flex;
   justify-content: space-between;
   font-size: 0.85rem;
-  color: var(--muted);
+  color: var(--ink-muted);
+}
+
+.bar-points {
+  font-family: "IBM Plex Mono", monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 .bar-track {
-  height: 8px;
+  height: 7px;
   border-radius: 999px;
-  background: #f1e5ea;
+  background: var(--rule);
   overflow: hidden;
 }
 
 .bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-light), var(--accent));
+  background: var(--accent);
   border-radius: 999px;
 }
+
+/* --------------------------- Suggestions ----------------------------- */
 
 .suggestion-list {
   list-style: none;
@@ -222,28 +379,33 @@ input[type="range"] {
 .suggestion-list li {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 1rem;
-  padding: 0.6rem 0.8rem;
-  background: #fbf3f6;
-  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
   font-size: 0.92rem;
 }
 
 .suggestion-label {
-  color: var(--muted);
+  color: var(--ink-muted);
   font-weight: 600;
 }
 
 .suggestion-value {
-  font-weight: 700;
-  color: var(--accent-dark);
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 500;
+  color: var(--accent);
   text-align: right;
 }
 
+/* ----------------------------- Verdict ------------------------------- */
+
 .verdict {
-  margin-top: 1.3rem;
+  margin-top: 1.4rem;
   padding: 1rem 1.1rem;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 0.95rem;
 }
 
@@ -263,19 +425,23 @@ input[type="range"] {
 }
 
 .verdict-diff {
+  font-family: "IBM Plex Mono", monospace;
   font-weight: 700;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
+  font-variant-numeric: tabular-nums;
 }
+
+/* ------------------------------ Footer -------------------------------- */
 
 .page-footer {
   text-align: center;
-  color: var(--muted);
-  font-size: 0.8rem;
+  color: var(--ink-muted);
+  font-size: 0.78rem;
   margin-top: 2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--rule);
 }
 
-@media (max-width: 480px) {
-  .score-number {
-    font-size: 2.1rem;
-  }
+.page-footer p {
+  margin: 0;
 }
