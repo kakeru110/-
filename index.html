@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>婚活市場価値診断（エンタメ版）</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="page-header">
+  <h1>婚活市場価値診断</h1>
+  <p class="subtitle">自分の市場価値と、求める条件の釣り合いをチェックする簡易ツール</p>
+</header>
+
+<main class="container">
+  <section class="disclaimer">
+    <strong>注意:</strong>
+    このツールはネット上でよく言われる「婚活市場での傾向」を元にした簡易的な計算で遊ぶエンタメコンテンツです。
+    統計的・科学的な根拠はなく、人の価値や相性を測るものではありません。話のネタとしてお楽しみください。
+  </section>
+
+  <!-- STEP 1: 自分の市場価値診断 -->
+  <section class="card">
+    <h2>STEP 1. あなたの市場価値を診断</h2>
+    <form id="self-form">
+      <fieldset class="field">
+        <legend>性別</legend>
+        <label><input type="radio" name="self-gender" value="male" checked> 男性</label>
+        <label><input type="radio" name="self-gender" value="female"> 女性</label>
+      </fieldset>
+
+      <label class="field">
+        <span>年齢</span>
+        <input type="number" id="self-age" min="18" max="90" value="30" required>
+      </label>
+
+      <label class="field">
+        <span>身長 (cm)</span>
+        <input type="number" id="self-height" min="130" max="220" value="170" required>
+      </label>
+
+      <label class="field">
+        <span>年収 (万円)</span>
+        <input type="number" id="self-income" min="0" max="100000" step="10" value="400" required>
+      </label>
+
+      <label class="field" id="self-job-row">
+        <span>職業・雇用形態</span>
+        <select id="self-job">
+          <option value="student">学生・無職・その他</option>
+          <option value="nonregular">契約・派遣・非正規</option>
+          <option value="freelance">自営業・フリーランス</option>
+          <option value="sme" selected>中小企業正社員</option>
+          <option value="midsize">中堅企業正社員</option>
+          <option value="top">大企業・公務員・士業（医師・弁護士等）</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>外見の自己評価: <b id="self-appearance-value"></b></span>
+        <input type="range" id="self-appearance" min="1" max="5" value="3">
+      </label>
+
+      <label class="field">
+        <span>性格・コミュ力の自己評価: <b id="self-personality-value"></b></span>
+        <input type="range" id="self-personality" min="1" max="5" value="3">
+      </label>
+
+      <button type="submit" class="btn-primary">診断する</button>
+    </form>
+  </section>
+
+  <section class="card result-card" id="self-result" hidden>
+    <h2>あなたの市場価値スコア</h2>
+    <div class="score-headline">
+      <span class="score-number" id="self-score-value">-</span>
+      <span class="score-suffix">/ 100点</span>
+      <span class="rank-badge" id="self-rank-label">-</span>
+    </div>
+    <p class="rank-desc" id="self-rank-desc"></p>
+    <div class="breakdown" id="self-breakdown"></div>
+  </section>
+
+  <!-- 自分のスコアに見合う相手条件の目安 -->
+  <section class="card result-card" id="suggestion-result" hidden>
+    <h2>あなたのスコア（<span id="suggestion-score">-</span>点）に見合う相手条件の目安</h2>
+    <p class="hint">同じくらいの「市場価値の釣り合い」になりやすい、一般的な相手条件の目安です。</p>
+    <ul class="suggestion-list" id="suggestion-list"></ul>
+  </section>
+
+  <!-- STEP 2: 相手に求める条件 -->
+  <section class="card" id="partner-section" hidden>
+    <h2>STEP 2. 相手に求める条件を入力</h2>
+    <p class="hint">例えば「年収5000万円以上を希望」なら、年収欄に5000と入力してください。</p>
+    <form id="partner-form">
+      <fieldset class="field">
+        <legend>相手の性別</legend>
+        <label><input type="radio" name="partner-gender" value="male"> 男性</label>
+        <label><input type="radio" name="partner-gender" value="female" checked> 女性</label>
+      </fieldset>
+
+      <label class="field">
+        <span>希望する年齢</span>
+        <input type="number" id="partner-age" min="18" max="90" value="30" required>
+      </label>
+
+      <label class="field">
+        <span>希望する身長 (cm)</span>
+        <input type="number" id="partner-height" min="130" max="220" value="170" required>
+      </label>
+
+      <label class="field">
+        <span>希望する年収 (万円・最低ライン)</span>
+        <input type="number" id="partner-income" min="0" max="100000" step="10" value="400" required>
+      </label>
+
+      <label class="field" id="partner-job-row">
+        <span>希望する職業・雇用形態</span>
+        <select id="partner-job">
+          <option value="student">学生・無職・その他</option>
+          <option value="nonregular">契約・派遣・非正規</option>
+          <option value="freelance">自営業・フリーランス</option>
+          <option value="sme" selected>中小企業正社員</option>
+          <option value="midsize">中堅企業正社員</option>
+          <option value="top">大企業・公務員・士業（医師・弁護士等）</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>希望する外見レベル: <b id="partner-appearance-value"></b></span>
+        <input type="range" id="partner-appearance" min="1" max="5" value="3">
+      </label>
+
+      <label class="field">
+        <span>希望する性格レベル: <b id="partner-personality-value"></b></span>
+        <input type="range" id="partner-personality" min="1" max="5" value="3">
+      </label>
+
+      <button type="submit" class="btn-primary">釣り合いをチェック</button>
+    </form>
+  </section>
+
+  <section class="card result-card" id="partner-result" hidden>
+    <h2>求める条件のスコア</h2>
+    <div class="score-headline">
+      <span class="score-number" id="partner-score-value">-</span>
+      <span class="score-suffix">/ 100点</span>
+      <span class="rank-badge" id="partner-rank-label">-</span>
+    </div>
+    <p class="rank-desc" id="partner-rank-desc"></p>
+    <div class="breakdown" id="partner-breakdown"></div>
+
+    <div class="verdict" id="verdict-box"></div>
+  </section>
+
+  <footer class="page-footer">
+    <p>© 婚活市場価値診断（エンタメ版）。本ツールの算出結果は目安であり、個人の価値や相性を保証・評価するものではありません。</p>
+  </footer>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
