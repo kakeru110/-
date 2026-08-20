@@ -31,6 +31,38 @@
     統計的・科学的な根拠はなく、人の価値や相性を保証・評価するものではありません。話のネタとしてお楽しみください。
   </section>
 
+  <!-- 配点表: 男女で異なる重み付け -->
+  <section class="card">
+    <p class="eyebrow">SCORING WEIGHTS</p>
+    <h2>配点表 — 男女で異なる重み付け</h2>
+    <p class="hint">
+      「男性は経済力、女性は年齢・外見が重視されやすい」という婚活市場の一般的な傾向を踏まえ、
+      同じ項目でも男女で配点（重要度）を変えています。
+    </p>
+    <div class="weight-table-wrap">
+      <table class="weight-table">
+        <thead>
+          <tr>
+            <th scope="col">項目</th>
+            <th scope="col">男性の配点</th>
+            <th scope="col">女性の配点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">年収</th><td>35点</td><td>10点</td></tr>
+          <tr><th scope="row">年齢</th><td>15点</td><td>30点</td></tr>
+          <tr><th scope="row">外見</th><td>15点</td><td>30点</td></tr>
+          <tr><th scope="row">身長</th><td>15点</td><td>15点</td></tr>
+          <tr><th scope="row">職業・雇用形態</th><td>15点</td><td>—</td></tr>
+          <tr><th scope="row">性格・家庭的な面</th><td>5点</td><td>15点</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><th scope="row">合計</th><td>100点</td><td>100点</td></tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
   <!-- STEP 1: 自分の市場価値診断 -->
   <section class="card">
     <p class="eyebrow">STEP 1</p>
@@ -43,22 +75,22 @@
       </fieldset>
 
       <label class="field">
-        <span>年齢</span>
+        <span>年齢 <span class="field-weight" id="self-age-weight"></span></span>
         <input type="number" id="self-age" min="18" max="90" value="30" required>
       </label>
 
       <label class="field">
-        <span>身長 (cm)</span>
+        <span>身長 (cm) <span class="field-weight" id="self-height-weight"></span></span>
         <input type="number" id="self-height" min="130" max="220" value="170" required>
       </label>
 
       <label class="field">
-        <span>年収 (万円)</span>
+        <span>年収 (万円) <span class="field-weight" id="self-income-weight"></span></span>
         <input type="number" id="self-income" min="0" max="100000" step="10" value="400" required>
       </label>
 
       <label class="field" id="self-job-row">
-        <span>職業・雇用形態</span>
+        <span>職業・雇用形態 <span class="field-weight" id="self-job-weight"></span></span>
         <select id="self-job">
           <option value="student">学生・無職・その他</option>
           <option value="nonregular">契約・派遣・非正規</option>
@@ -70,12 +102,12 @@
       </label>
 
       <label class="field">
-        <span>外見の自己評価: <b id="self-appearance-value"></b></span>
+        <span>外見の自己評価: <b id="self-appearance-value"></b> <span class="field-weight" id="self-appearance-weight"></span></span>
         <input type="range" id="self-appearance" min="1" max="5" value="3">
       </label>
 
       <label class="field">
-        <span>性格・コミュ力の自己評価: <b id="self-personality-value"></b></span>
+        <span>性格・コミュ力の自己評価: <b id="self-personality-value"></b> <span class="field-weight" id="self-personality-weight"></span></span>
         <input type="range" id="self-personality" min="1" max="5" value="3">
       </label>
 
@@ -121,22 +153,22 @@
       </fieldset>
 
       <label class="field">
-        <span>希望する年齢</span>
+        <span>希望する年齢 <span class="field-weight" id="partner-age-weight"></span></span>
         <input type="number" id="partner-age" min="18" max="90" value="30" required>
       </label>
 
       <label class="field">
-        <span>希望する身長 (cm)</span>
+        <span>希望する身長 (cm) <span class="field-weight" id="partner-height-weight"></span></span>
         <input type="number" id="partner-height" min="130" max="220" value="170" required>
       </label>
 
       <label class="field">
-        <span>希望する年収 (万円・最低ライン)</span>
+        <span>希望する年収 (万円・最低ライン) <span class="field-weight" id="partner-income-weight"></span></span>
         <input type="number" id="partner-income" min="0" max="100000" step="10" value="400" required>
       </label>
 
       <label class="field" id="partner-job-row">
-        <span>希望する職業・雇用形態</span>
+        <span>希望する職業・雇用形態 <span class="field-weight" id="partner-job-weight"></span></span>
         <select id="partner-job">
           <option value="student">学生・無職・その他</option>
           <option value="nonregular">契約・派遣・非正規</option>
@@ -148,12 +180,12 @@
       </label>
 
       <label class="field">
-        <span>希望する外見レベル: <b id="partner-appearance-value"></b></span>
+        <span>希望する外見レベル: <b id="partner-appearance-value"></b> <span class="field-weight" id="partner-appearance-weight"></span></span>
         <input type="range" id="partner-appearance" min="1" max="5" value="3">
       </label>
 
       <label class="field">
-        <span>希望する性格レベル: <b id="partner-personality-value"></b></span>
+        <span>希望する性格レベル: <b id="partner-personality-value"></b> <span class="field-weight" id="partner-personality-weight"></span></span>
         <input type="range" id="partner-personality" min="1" max="5" value="3">
       </label>
 

@@ -176,6 +176,63 @@ body {
   margin-bottom: 1.1rem;
 }
 
+.field-weight {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--gold);
+}
+
+.weight-table-wrap {
+  overflow-x: auto;
+}
+
+.weight-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.weight-table th,
+.weight-table td {
+  padding: 0.55rem 0.7rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.weight-table thead th {
+  color: var(--ink-muted);
+  font-family: "IBM Plex Sans JP", sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.weight-table th[scope="row"] {
+  text-align: left;
+  font-family: "IBM Plex Sans JP", sans-serif;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.weight-table thead th:first-child,
+.weight-table tbody th,
+.weight-table tfoot th {
+  border-bottom-color: var(--rule-strong);
+}
+
+.weight-table tfoot th,
+.weight-table tfoot td {
+  border-bottom: none;
+  border-top: 1px solid var(--rule-strong);
+  color: var(--accent);
+  font-weight: 700;
+}
+
 /* ------------------------------ Fields ------------------------------ */
 
 .field {
@@ -185,6 +242,10 @@ body {
   margin-bottom: 1.1rem;
   border: none;
   padding: 0;
+}
+
+.field[hidden] {
+  display: none;
 }
 
 .field legend {

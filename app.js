@@ -187,6 +187,23 @@ function toggleJobRow(prefix) {
   row.hidden = gender !== "male";
 }
 
+function updateWeightBadges(prefix) {
+  const gender = document.querySelector(`input[name="${prefix}-gender"]:checked`).value;
+  const weightByKey = {};
+  CATEGORIES[gender].forEach((cat) => {
+    weightByKey[cat.key] = cat.max;
+  });
+  ["age", "height", "income", "job", "appearance", "personality"].forEach((key) => {
+    const badge = document.getElementById(`${prefix}-${key}-weight`);
+    if (!badge) return;
+    if (weightByKey[key] !== undefined) {
+      badge.textContent = `配点 ${weightByKey[key]}点`;
+    } else {
+      badge.textContent = "";
+    }
+  });
+}
+
 function renderBreakdown(container, breakdown) {
   container.innerHTML = "";
   breakdown.forEach((cat) => {
@@ -242,6 +259,7 @@ function handleSelfSubmit(e) {
   if (partnerGenderInput) {
     partnerGenderInput.checked = true;
     toggleJobRow("partner");
+    updateWeightBadges("partner");
   }
   document.getElementById("partner-section").hidden = false;
 
@@ -291,10 +309,16 @@ function renderSuggestion() {
 
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('input[name="self-gender"]').forEach((el) =>
-    el.addEventListener("change", () => toggleJobRow("self"))
+    el.addEventListener("change", () => {
+      toggleJobRow("self");
+      updateWeightBadges("self");
+    })
   );
   document.querySelectorAll('input[name="partner-gender"]').forEach((el) =>
-    el.addEventListener("change", () => toggleJobRow("partner"))
+    el.addEventListener("change", () => {
+      toggleJobRow("partner");
+      updateWeightBadges("partner");
+    })
   );
   document.getElementById("self-appearance").addEventListener("input", updateSelfLiveLabels);
   document.getElementById("self-personality").addEventListener("input", updateSelfLiveLabels);
@@ -306,6 +330,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   toggleJobRow("self");
   toggleJobRow("partner");
+  updateWeightBadges("self");
+  updateWeightBadges("partner");
   updateSelfLiveLabels();
   updatePartnerLiveLabels();
 });
