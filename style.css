@@ -127,6 +127,35 @@ body {
   font-size: 0.95rem;
 }
 
+.site-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: 0 0 1.8rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+}
+
+.site-nav a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  text-decoration: underline;
+}
+
+.site-nav .current {
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.site-nav .sep {
+  color: var(--rule-strong);
+}
+
 /* --------------------------- Disclaimer ---------------------------- */
 
 .disclaimer {

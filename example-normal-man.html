@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>「普通の男性」は実在するか</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead">
+    <div class="seal-mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" width="40" height="40">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="32" cy="32" r="23" fill="none" stroke="currentColor" stroke-width="1"/>
+        <path d="M32 20 L36 29 L46 30 L38.5 37 L40.5 47 L32 42 L23.5 47 L25.5 37 L18 30 L28 29 Z" fill="currentColor"/>
+      </svg>
+    </div>
+    <p class="masthead-eyebrow">CASE STUDY</p>
+    <h1>「普通の男性」は実在するか</h1>
+    <p class="subtitle">婚活の場でよく語られる「普通の男」の条件を、実際に計算してみた</p>
+  </header>
+
+  <nav class="site-nav">
+    <a href="index.html">査定ツール</a>
+    <span class="sep">|</span>
+    <a href="method.html">算出方法</a>
+    <span class="sep">|</span>
+    <a href="rarity.html">希少度チェック</a>
+    <span class="sep">|</span>
+    <span class="current">この例</span>
+  </nav>
+
+  <section class="disclaimer">
+    <strong>本ページについて:</strong>
+    SNSやテレビの街頭調査などで見かける「これくらいが普通」という条件リストの例をもとに、
+    <a href="rarity.html">希少度チェック</a>と同じ計算方法（人口分布の仮定値を掛け合わせる概算）で
+    実際にどれくらいの割合の男性が該当しそうかを試算したものです。公的統計ではなく、あくまで目安の試算です。
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">01</p>
+    <h2>「一般的な普通の男」の条件</h2>
+    <p class="hint">婚活・恋愛の話題でよく挙げられる、次の7つの条件で試算します。</p>
+    <div class="weight-table-wrap">
+      <table class="weight-table">
+        <thead><tr><th scope="col">条件</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">年収500万円以上</th></tr>
+          <tr><th scope="row">大卒</th></tr>
+          <tr><th scope="row">身長170センチ以上</th></tr>
+          <tr><th scope="row">正社員</th></tr>
+          <tr><th scope="row">長男以外</th></tr>
+          <tr><th scope="row">清潔感がある</th></tr>
+          <tr><th scope="row">常識やマナーがきちんとしている</th></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card result-card">
+    <p class="eyebrow">RESULT</p>
+    <h2>実際に計算すると</h2>
+    <div class="rarity-headline">
+      <span class="rarity-count">約14.5万人</span>
+      <span class="rarity-sub">男性人口のおよそ 0.97%</span>
+    </div>
+    <p class="rarity-odds">およそ 103人に1人の割合</p>
+
+    <div class="weight-table-wrap">
+      <table class="weight-table">
+        <thead>
+          <tr><th scope="col">項目</th><th scope="col">該当率</th><th scope="col">根拠</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">身長170cm以上</th><td>57.2%</td><td>身長の分布を正規分布(平均171cm・SD5.5)と仮定</td></tr>
+          <tr><th scope="row">年収500万円以上</th><td>40.0%</td><td>年収分布の概算値（<a href="rarity.html">希少度チェック</a>と同じ仮定）</td></tr>
+          <tr><th scope="row">大卒</th><td>45.0%</td><td>大学・短大等進学率の概算値</td></tr>
+          <tr><th scope="row">正社員</th><td>57.0%</td><td>雇用形態の割合の概算値</td></tr>
+          <tr><th scope="row">長男以外</th><td>55.0%</td><td>きょうだい構成からのラフな仮定</td></tr>
+          <tr><th scope="row">清潔感がある</th><td>50.0%</td><td>主観的な基準のため中央値として仮定</td></tr>
+          <tr><th scope="row">常識・マナーがきちんとしている</th><td>60.0%</td><td>主観的な基準のため仮定</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><th scope="row">すべて満たす</th><td colspan="2">0.97%（約103人に1人）</td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <p class="hint" style="margin-top:1rem;margin-bottom:0;">
+      各項目の該当率をすべて掛け合わせた数値です（独立と仮定した概算）。1つ1つの条件は
+      「まあ普通では」と思えるものでも、7つ同時に満たす人は人口の1%を切るという結果になります。
+    </p>
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">02</p>
+    <h2>なぜこんなに少なくなるのか</h2>
+    <p class="hint" style="margin-bottom:0;">
+      個々の条件は「大半の人が満たす」ようなものではなく、多くてもせいぜい5〜6割の該当率です。
+      それでも7項目を同時に掛け合わせると、0.6〜0.4を7回掛け合わせる計算になり、指数関数的に絞り込まれます。
+      「1つ1つは普通でも、組み合わせると激レア」という、条件を足し算ではなく掛け算で考えたときに起きる現象です。
+    </p>
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">03</p>
+    <h2>自分の条件でも試してみる</h2>
+    <p class="hint" style="margin-bottom:0;">
+      年齢・年収・身長・職業・外見・体型・性格から、こだわりたい項目だけ選んで
+      <a href="rarity.html">希少度チェック</a>で試算できます。
+      「自分は普通を求めているだけ」のつもりの条件が、実はどれくらい絞り込まれているか確認してみてください。
+    </p>
+  </section>
+
+  <footer class="page-footer">
+    <p><a href="index.html">← 市場価値を診断する</a>　|　<a href="method.html">算出方法を見る</a>　|　<a href="rarity.html">希少度チェックをする</a></p>
+    <p>婚活市場価値 査定書（エンタメ版）。本ページの試算結果は目安であり、実際の人口分布を保証するものではありません。</p>
+  </footer>
+
+</div>
+</body>
+</html>
