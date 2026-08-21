@@ -49,86 +49,98 @@ const FEMALE_JOB_TIERS = [
   { value: "glamour", label: "客室乗務員（CA）・アナウンサー・医師/士業", points: 10 },
 ];
 
-// 婚活市場で「学歴フィルター」としてよく言及される大学の序列（日東駒専・MARCH等）を
-// 踏まえた男性のみの学歴ティア。
+// 婚活市場で「学歴フィルター」としてよく言及される大学の序列（日東駒専・成成明学獨國武・
+// MARCH/関関同立・早慶/旧帝大等）を踏まえた男性のみの学歴ティア。
 const MALE_EDUCATION_TIERS = [
-  { value: "highschool", label: "高校卒・中卒", points: 2 },
-  { value: "vocational", label: "専門学校・短大卒", points: 4 },
-  { value: "university_low", label: "大学卒（日東駒専未満）", points: 5 },
-  { value: "university_mid", label: "大学卒（日東駒専〜MARCH）", points: 7 },
-  { value: "university_top", label: "大学卒（早慶・旧帝大等の難関大）", points: 10 },
+  { value: "middle", label: "中卒・高校中退", points: 1 },
+  { value: "highschool", label: "高校卒", points: 2 },
+  { value: "vocational", label: "専門学校・短大卒", points: 3 },
+  { value: "university_low", label: "大学卒（日東駒専未満）", points: 4 },
+  { value: "university_nittokomasen", label: "大学卒（日東駒専）", points: 5 },
+  { value: "university_seimarch", label: "大学卒（成成明学獨國武）", points: 6 },
+  { value: "university_march", label: "大学卒（MARCH・関関同立）", points: 8 },
+  { value: "university_top", label: "大学卒（早慶・旧帝大等の最難関）・大学院卒", points: 10 },
 ];
 
-// 年齢は加点だけでなく、最終スコア全体への倍率としても効かせる。
+// 婚姻歴・子供の有無。男女共通の項目として扱う。
+const MARITAL_TIERS = [
+  { value: "remarried_with_children_living", label: "再婚・子供あり（同居）", points: 2 },
+  { value: "remarried_with_children_apart", label: "再婚・子供あり（別居）", points: 4 },
+  { value: "remarried_no_children", label: "再婚・子供なし", points: 7 },
+  { value: "first_marriage_no_children", label: "初婚・子供なし", points: 10 },
+];
+
+// 年齢は加点ではなく、最終スコア全体への倍率としてのみ効かせる。
 // 「他の項目がどれだけ高くても、理想的な年齢層から離れるほど頭打ちになる」という
-// 婚活市場でよく言われる傾向を表現するための係数。
+// 婚活市場でよく言われる傾向を、単峰（山なり）の連続カーブで表現する。
+// ピーク年齢を中心に、ピークより若い側はsigmaLo、上の側はsigmaHiで減衰する。
 const AGE_MULTIPLIER = {
-  male: { windowLo: 27, windowHi: 35, sigmaLo: 7, sigmaHi: 8, floor: 0.25 },
-  female: { windowLo: 23, windowHi: 28, sigmaLo: 5, sigmaHi: 7, floor: 0.2 },
+  male: { peak: 31, sigmaLo: 16, sigmaHi: 8, floor: 0.25 },
+  female: { peak: 25.5, sigmaLo: 20, sigmaHi: 7, floor: 0.2 },
 };
 
 // 「女性は年齢がほぼ絶対条件、男性は年収が高ければ年齢の高さをある程度
 // カバーできる」という非対称な傾向を反映し、男性のみ年収に応じて
-// 年齢の上限窓(windowHi)とフロア(floor)を引き上げる。女性側は年収による
+// 倍率カーブのピーク年齢とフロアを引き上げる。女性側は年収による
 // 補正を行わない。
 const MALE_AGE_INCOME_RESCUE = {
-  yearsPerManYen: 250, // 年収250万円ごとに許容年齢+1歳
+  yearsPerManYen: 250, // 年収250万円ごとにピーク年齢+1歳
   maxBonusYears: 12,
   floorPerManYen: 15000, // 年収が高いほどフロアも底上げ
   floorCap: 0.6,
 };
 
 // 男性の年収レスキューと対になる仕組み。「美人は年齢を重ねても市場価値が
-// 保たれやすい」という傾向を反映し、顔立ちスコアが高い女性ほど年齢の
-// 上限窓とフロアが引き上がる。外見が平均的な女性は今まで通り厳しいまま。
+// 保たれやすい」という傾向を反映し、顔立ちスコアが高い女性ほど倍率カーブの
+// ピーク年齢とフロアが引き上がる。外見が平均的な女性は今まで通り厳しいまま。
 const FEMALE_AGE_APPEARANCE_RESCUE = {
-  pointsPerYear: 4, // 顔立ちスコア4点ごとに許容年齢+1歳
+  pointsPerYear: 4, // 顔立ちスコア4点ごとにピーク年齢+1歳
   maxBonusYears: 5,
   floorPerPoint: 0.006,
   floorCap: 0.3,
 };
 
+// 単峰の年齢倍率カーブ。ピーク年齢で倍率1、そこから離れるほど（下側はsigmaLo、
+// 上側はsigmaHiで）滑らかに減衰し、floorに漸近する。「安全窓」のような
+// 平坦区間は設けず、常にグラデーションがつく設計。
 function ageMultiplier(genderKey, age, rescueValue) {
   const cfg = AGE_MULTIPLIER[genderKey];
   const a = Number(age) || 0;
-  let windowHi = cfg.windowHi;
+  let effectivePeak = cfg.peak;
   let floor = cfg.floor;
   if (genderKey === "male") {
     const inc = Math.max(0, Number(rescueValue) || 0);
     const r = MALE_AGE_INCOME_RESCUE;
-    windowHi += Math.min(r.maxBonusYears, inc / r.yearsPerManYen);
+    effectivePeak += Math.min(r.maxBonusYears, inc / r.yearsPerManYen);
     floor = Math.min(r.floorCap, cfg.floor + inc / r.floorPerManYen);
   } else if (genderKey === "female") {
     const app = Math.max(0, Number(rescueValue) || 0);
     const r = FEMALE_AGE_APPEARANCE_RESCUE;
-    windowHi += Math.min(r.maxBonusYears, app / r.pointsPerYear);
+    effectivePeak += Math.min(r.maxBonusYears, app / r.pointsPerYear);
     floor = Math.min(r.floorCap, cfg.floor + app * r.floorPerPoint);
   }
-  if (a >= cfg.windowLo && a <= windowHi) return 1;
-  if (a < cfg.windowLo) {
-    return cfg.floor + (1 - cfg.floor) * Math.exp(-((cfg.windowLo - a) ** 2) / (2 * cfg.sigmaLo * cfg.sigmaLo));
-  }
-  return floor + (1 - floor) * Math.exp(-((a - windowHi) ** 2) / (2 * cfg.sigmaHi * cfg.sigmaHi));
+  const sigma = a < effectivePeak ? cfg.sigmaLo : cfg.sigmaHi;
+  return floor + (1 - floor) * Math.exp(-((a - effectivePeak) ** 2) / (2 * sigma * sigma));
 }
 
 const CATEGORIES = {
   male: [
-    { key: "income", label: "年収", type: "income", cap: 30, max: 30, k: 700, unit: "万円", plausible: [0, 10000] },
-    { key: "age", label: "年齢", type: "gaussian", max: 15, floor: 5, peak: 30, sigma: 12, unit: "歳", plausible: [20, 70] },
+    { key: "income", label: "年収", type: "income", cap: 35, max: 35, k: 700, unit: "万円", plausible: [0, 10000] },
     { key: "height", label: "身長", type: "gaussian", max: 15, floor: 3, peak: 178, sigma: 10, unit: "cm", plausible: [150, 200] },
     { key: "job", label: "職業・雇用形態", type: "discrete", max: 10, tiers: MALE_JOB_TIERS },
     { key: "education", label: "学歴", type: "discrete", max: 10, tiers: MALE_EDUCATION_TIERS },
+    { key: "marital", label: "婚姻歴・子供の有無", type: "discrete", max: 10, tiers: MARITAL_TIERS },
     { key: "appearance", label: "顔立ち", type: "slider", max: 10, labels: APPEARANCE_LABELS },
     { key: "body", label: "体型", type: "slider", max: 5, labels: BODY_LABELS },
     { key: "personality", label: "性格・コミュ力", type: "slider", max: 5, labels: PERSONALITY_LABELS },
   ],
   female: [
-    { key: "age", label: "年齢", type: "gaussian", max: 30, floor: 4, peak: 25, sigma: 7, unit: "歳", plausible: [20, 60] },
-    { key: "appearance", label: "顔立ち", type: "slider", max: 20, labels: APPEARANCE_LABELS },
-    { key: "body", label: "体型", type: "slider", max: 10, labels: BODY_LABELS },
-    { key: "height", label: "身長", type: "gaussian", max: 5, floor: 2, peak: 162, sigma: 12, unit: "cm", plausible: [140, 185] },
+    { key: "appearance", label: "顔立ち", type: "slider", max: 30, labels: APPEARANCE_LABELS },
+    { key: "body", label: "体型", type: "slider", max: 15, labels: BODY_LABELS },
+    { key: "height", label: "身長", type: "gaussian", max: 10, floor: 4, peak: 162, sigma: 12, unit: "cm", plausible: [140, 185] },
     { key: "income", label: "年収", type: "income", cap: 10, max: 10, k: 500, unit: "万円", plausible: [0, 10000] },
     { key: "job", label: "職業・雇用形態", type: "discrete", max: 10, tiers: FEMALE_JOB_TIERS },
+    { key: "marital", label: "婚姻歴・子供の有無", type: "discrete", max: 10, tiers: MARITAL_TIERS },
     { key: "personality", label: "性格・家庭的な面", type: "slider", max: 15, labels: PERSONALITY_LABELS },
   ],
 };
@@ -158,17 +170,12 @@ function scoreCategory(cat, rawValue) {
 
 function scoreProfile(genderKey, values) {
   const cats = CATEGORIES[genderKey];
-  let ageCategoryPoints = 0;
-  let otherRawTotal = 0;
+  let rawTotal = 0;
   let appearancePoints = 0;
   const breakdown = [];
   cats.forEach((cat) => {
     const points = scoreCategory(cat, values[cat.key]);
-    if (cat.key === "age") {
-      ageCategoryPoints = points;
-    } else {
-      otherRawTotal += points;
-    }
+    rawTotal += points;
     if (cat.key === "appearance") {
       appearancePoints = points;
     }
@@ -176,16 +183,11 @@ function scoreProfile(genderKey, values) {
   });
   const ageRescueValue = genderKey === "male" ? values.income : appearancePoints;
   const multiplier = ageMultiplier(genderKey, values.age, ageRescueValue);
-  // 年齢は「加点」と「倍率」で役割を分ける。年齢自体の評価は加点(ageCategoryPoints)で
-  // 表現し、倍率は年齢以外の項目にだけかける。こうしないと年齢の悪さが
-  // 加点でも倍率でも二重にペナルティになってしまう。
-  const rawTotal = ageCategoryPoints + otherRawTotal;
-  const total = Math.round((ageCategoryPoints + otherRawTotal * multiplier) * 10) / 10;
+  // 年齢は加点を持たず、年齢以外の項目の合計に対する倍率としてのみ効く。
+  const total = Math.round(rawTotal * multiplier * 10) / 10;
   return {
     total,
     rawTotal: Math.round(rawTotal * 10) / 10,
-    ageCategoryPoints: Math.round(ageCategoryPoints * 10) / 10,
-    otherRawTotal: Math.round(otherRawTotal * 10) / 10,
     multiplier,
     breakdown,
   };
@@ -299,12 +301,30 @@ function invertCategory(cat, ratio) {
   }
 }
 
+// 年齢倍率カーブを逆算し、「これくらいの釣り合い(倍率)になりやすい年齢範囲」を出す。
+// レスキュー加点（男性の年収・女性の顔立ち）は加味せず、基準カーブでの目安とする。
+function invertAgeMultiplier(genderKey, ratio) {
+  const cfg = AGE_MULTIPLIER[genderKey];
+  const r = Math.min(0.985, Math.max(0, ratio));
+  if (r <= cfg.floor) {
+    return "特にこだわらなくても対象になりやすい範囲";
+  }
+  const inner = (r - cfg.floor) / (1 - cfg.floor);
+  const deltaLo = cfg.sigmaLo * Math.sqrt(-2 * Math.log(inner));
+  const deltaHi = cfg.sigmaHi * Math.sqrt(-2 * Math.log(inner));
+  const lo = Math.max(18, Math.round(cfg.peak - deltaLo));
+  const hi = Math.min(70, Math.round(cfg.peak + deltaHi));
+  return `${lo}〜${hi}歳`;
+}
+
 function suggestPartnerProfile(partnerGenderKey, ownScore) {
   const r = ownScore / 100;
-  return CATEGORIES[partnerGenderKey].map((cat) => ({
+  const ageSuggestion = { label: "年齢", suggestion: invertAgeMultiplier(partnerGenderKey, r) };
+  const categorySuggestions = CATEGORIES[partnerGenderKey].map((cat) => ({
     label: cat.label,
     suggestion: invertCategory(cat, r),
   }));
+  return [ageSuggestion, ...categorySuggestions];
 }
 
 /* ------------------------------- DOM ------------------------------- */
@@ -323,6 +343,7 @@ function readForm(prefix) {
       height: document.getElementById(`${prefix}-height`).value,
       job: document.getElementById(`${prefix}-job`).value,
       education: document.getElementById(`${prefix}-education`).value,
+      marital: document.getElementById(`${prefix}-marital`).value,
       appearance: document.getElementById(`${prefix}-appearance`).value,
       body: document.getElementById(`${prefix}-body`).value,
       personality: document.getElementById(`${prefix}-personality`).value,
@@ -353,7 +374,9 @@ function updateWeightBadges(prefix) {
   CATEGORIES[gender].forEach((cat) => {
     weightByKey[cat.key] = cat.max;
   });
-  ["age", "height", "income", "job", "education", "appearance", "body", "personality"].forEach((key) => {
+  const ageBadge = document.getElementById(`${prefix}-age-weight`);
+  if (ageBadge) ageBadge.textContent = "倍率のみ（配点なし）";
+  ["height", "income", "job", "education", "marital", "appearance", "body", "personality"].forEach((key) => {
     const badge = document.getElementById(`${prefix}-${key}-weight`);
     if (!badge) return;
     if (weightByKey[key] !== undefined) {
@@ -402,17 +425,16 @@ function updatePartnerLiveLabels() {
     PERSONALITY_LABELS[document.getElementById("partner-personality").value - 1];
 }
 
-function renderMultiplierNote(elementId, ageCategoryPoints, otherRawTotal, multiplier, total) {
+function renderMultiplierNote(elementId, rawTotal, multiplier, total) {
   const el = document.getElementById(elementId);
   el.textContent =
-    `年齢の加点 ${ageCategoryPoints.toFixed(1)}点 + その他の得点 ${otherRawTotal.toFixed(1)}点 × 年齢倍率 ${multiplier.toFixed(2)} ` +
-    `＝ 最終 ${total.toFixed(1)}点`;
+    `年齢以外の項目の合計 ${rawTotal.toFixed(1)}点 × 年齢倍率 ${multiplier.toFixed(2)} ＝ 最終 ${total.toFixed(1)}点`;
 }
 
 function handleSelfSubmit(e) {
   e.preventDefault();
   const { gender, values } = readForm("self");
-  const { total, ageCategoryPoints, otherRawTotal, multiplier, breakdown } = scoreProfile(gender, values);
+  const { total, rawTotal, multiplier, breakdown } = scoreProfile(gender, values);
   ownScoreState = total;
   ownGenderState = gender;
 
@@ -424,7 +446,7 @@ function handleSelfSubmit(e) {
   document.getElementById("self-hensachi-note").textContent =
     `偏差値目安 ${selfHensachi.toFixed(1)}（同性の中でおよそ上位 ${toTopPercent(selfHensachi)}%相当）`;
   renderBreakdown(document.getElementById("self-breakdown"), breakdown);
-  renderMultiplierNote("self-multiplier-note", ageCategoryPoints, otherRawTotal, multiplier, total);
+  renderMultiplierNote("self-multiplier-note", rawTotal, multiplier, total);
   document.getElementById("self-result").hidden = false;
 
   // 相手の性別デフォルトを異性に、パートナーフォームを表示
@@ -447,7 +469,7 @@ function handlePartnerSubmit(e) {
   e.preventDefault();
   if (ownScoreState === null) return;
   const { gender, values } = readForm("partner");
-  const { total, ageCategoryPoints, otherRawTotal, multiplier, breakdown } = scoreProfile(gender, values);
+  const { total, rawTotal, multiplier, breakdown } = scoreProfile(gender, values);
 
   const rank = rankOf(total);
   document.getElementById("partner-score-value").textContent = total.toFixed(1);
@@ -457,7 +479,7 @@ function handlePartnerSubmit(e) {
   document.getElementById("partner-hensachi-note").textContent =
     `偏差値目安 ${partnerHensachi.toFixed(1)}（同性の中でおよそ上位 ${toTopPercent(partnerHensachi)}%相当）`;
   renderBreakdown(document.getElementById("partner-breakdown"), breakdown);
-  renderMultiplierNote("partner-multiplier-note", ageCategoryPoints, otherRawTotal, multiplier, total);
+  renderMultiplierNote("partner-multiplier-note", rawTotal, multiplier, total);
 
   const diff = Math.round((ownScoreState - total) * 10) / 10;
   const v = verdictOf(diff);

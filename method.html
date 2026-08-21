@@ -46,7 +46,7 @@
     <p class="eyebrow">01</p>
     <h2>全体の考え方</h2>
     <p class="hint" style="margin-bottom:0;">
-      最終スコアは 0〜100点。「①男女で評価項目・配点が違う」「②年齢は加点だけでなく最終スコア全体への倍率としても効く」
+      最終スコアは 0〜100点。「①男女で評価項目・配点が違う」「②年齢は加点を持たず、最終スコア全体への倍率としてのみ効く」
       という2段構えで計算しています。以下、順に計算式を示します。
     </p>
   </section>
@@ -57,7 +57,8 @@
     <p class="hint">
       「男性は経済力、女性は年齢・外見が重視されやすい」という婚活市場の一般的な傾向を踏まえて配点しています。
       「外見」は顔立ちと体型で評価軸が異なるため分けて算入し、職業は男女それぞれ「人気・注目されやすい職種」の傾向を反映した別のティア表です。
-      学歴は「学歴フィルター」が話題になりやすい男性のみの項目です。
+      学歴は「学歴フィルター」が話題になりやすい男性のみの項目、婚姻歴・子供の有無は男女共通の項目です。
+      年齢はこの配点表には含まれず、下記の得点合計に対する倍率としてのみ作用します。
     </p>
     <div class="weight-table-wrap">
       <table class="weight-table">
@@ -69,13 +70,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr><th scope="row">年収</th><td>30点</td><td>10点</td></tr>
-          <tr><th scope="row">年齢</th><td>15点</td><td>30点</td></tr>
-          <tr><th scope="row">顔立ち</th><td>10点</td><td>20点</td></tr>
-          <tr><th scope="row">体型</th><td>5点</td><td>10点</td></tr>
-          <tr><th scope="row">身長</th><td>15点</td><td>5点</td></tr>
+          <tr><th scope="row">年収</th><td>35点</td><td>10点</td></tr>
+          <tr><th scope="row">顔立ち</th><td>10点</td><td>30点</td></tr>
+          <tr><th scope="row">体型</th><td>5点</td><td>15点</td></tr>
+          <tr><th scope="row">身長</th><td>15点</td><td>10点</td></tr>
           <tr><th scope="row">職業</th><td>10点</td><td>10点</td></tr>
           <tr><th scope="row">学歴</th><td>10点</td><td>—</td></tr>
+          <tr><th scope="row">婚姻歴・子供の有無</th><td>10点</td><td>10点</td></tr>
           <tr><th scope="row">性格・家庭的な面</th><td>5点</td><td>15点</td></tr>
         </tbody>
         <tfoot>
@@ -97,22 +98,22 @@
       <table class="weight-table">
         <thead><tr><th scope="col">性別</th><th scope="col">上限点</th><th scope="col">k（万円）</th></tr></thead>
         <tbody>
-          <tr><th scope="row">男性</th><td>30点</td><td>700</td></tr>
+          <tr><th scope="row">男性</th><td>35点</td><td>700</td></tr>
           <tr><th scope="row">女性</th><td>10点</td><td>500</td></tr>
         </tbody>
       </table>
     </div>
     <p class="hint" style="margin-bottom:0;">
-      例（男性）: 年収400万 → 13.1点 / 年収700万 → 19.0点 / 年収1500万 → 26.5点 / 年収3000万 → 29.6点
+      例（男性）: 年収400万 → 15.2点 / 年収700万 → 22.1点 / 年収1500万 → 30.9点 / 年収3000万 → 34.5点
     </p>
   </section>
 
   <section class="card">
     <p class="eyebrow">04</p>
-    <h2>年齢・身長の計算式（加点分）</h2>
+    <h2>身長の計算式（加点分）</h2>
     <p class="hint">
       理想の値（ピーク）にどれだけ近いかで点数が決まる正規分布型のカーブです。ピークから離れるほど点数は下がりますが、
-      「フロア」を下回ることはありません。この加点は年齢の総合倍率（06章）とは別枠です。
+      「フロア」を下回ることはありません。年齢はこのタイプの加点を持たず、06章の倍率としてのみ作用します。
     </p>
     <div class="formula-box">得点 = フロア +（上限点 − フロア）× e^（−（実測値 − ピーク）² ÷（2 × σ²））</div>
     <div class="weight-table-wrap">
@@ -121,10 +122,8 @@
           <tr><th scope="col">項目</th><th scope="col">性別</th><th scope="col">上限点</th><th scope="col">フロア</th><th scope="col">ピーク</th><th scope="col">σ</th></tr>
         </thead>
         <tbody>
-          <tr><th scope="row">年齢</th><td>男性</td><td>15点</td><td>5点</td><td>30歳</td><td>12</td></tr>
-          <tr><th scope="row">年齢</th><td>女性</td><td>30点</td><td>4点</td><td>25歳</td><td>7</td></tr>
           <tr><th scope="row">身長</th><td>男性</td><td>15点</td><td>3点</td><td>178cm</td><td>10</td></tr>
-          <tr><th scope="row">身長</th><td>女性</td><td>5点</td><td>2点</td><td>162cm</td><td>12</td></tr>
+          <tr><th scope="row">身長</th><td>女性</td><td>10点</td><td>4点</td><td>162cm</td><td>12</td></tr>
         </tbody>
       </table>
     </div>
@@ -132,8 +131,8 @@
 
   <section class="card">
     <p class="eyebrow">05</p>
-    <h2>職業・学歴・外見・体型・性格の計算式</h2>
-    <p class="hint">職業・学歴は男女別（学歴は男性のみ）のティア表から該当する得点を直接参照します。外見・体型・性格は5段階の自己評価スライダーを配点まで線形に変換します。</p>
+    <h2>職業・学歴・婚姻歴・外見・体型・性格の計算式</h2>
+    <p class="hint">職業・学歴・婚姻歴（学歴は男性のみ）はティア表から該当する得点を直接参照します。外見・体型・性格は5段階の自己評価スライダーを配点まで線形に変換します。</p>
     <div class="formula-box">スライダー系の得点 = （レベル ÷ 5）× 上限点</div>
 
     <p class="hint" style="margin-bottom:0.5rem;"><strong>男性の職業ティア（上限10点）</strong></p>
@@ -168,15 +167,34 @@
     </div>
 
     <p class="hint" style="margin:1.2rem 0 0.5rem;"><strong>男性の学歴ティア（上限10点・女性は対象外）</strong></p>
+    <p class="hint" style="margin-bottom:0.5rem;">
+      婚活市場で「学歴フィルター」としてよく言及される大学群の序列（日東駒専・成成明学獨國武・MARCH/関関同立・早慶/旧帝大）を踏まえた8段階です。
+    </p>
     <div class="weight-table-wrap">
       <table class="weight-table">
         <thead><tr><th scope="col">学歴</th><th scope="col">得点</th></tr></thead>
         <tbody>
-          <tr><th scope="row">高校卒・中卒</th><td>2点</td></tr>
-          <tr><th scope="row">専門学校・短大卒</th><td>4点</td></tr>
-          <tr><th scope="row">大学卒（日東駒専未満）</th><td>5点</td></tr>
-          <tr><th scope="row">大学卒（日東駒専〜MARCH）</th><td>7点</td></tr>
-          <tr><th scope="row">大学卒（早慶・旧帝大等の難関大）</th><td>10点</td></tr>
+          <tr><th scope="row">中卒・高校中退</th><td>1点</td></tr>
+          <tr><th scope="row">高校卒</th><td>2点</td></tr>
+          <tr><th scope="row">専門学校・短大卒</th><td>3点</td></tr>
+          <tr><th scope="row">大学卒（日東駒専未満）</th><td>4点</td></tr>
+          <tr><th scope="row">大学卒（日東駒専）</th><td>5点</td></tr>
+          <tr><th scope="row">大学卒（成成明学獨國武）</th><td>6点</td></tr>
+          <tr><th scope="row">大学卒（MARCH・関関同立）</th><td>8点</td></tr>
+          <tr><th scope="row">大学卒（早慶・旧帝大等の最難関）・大学院卒</th><td>10点</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="hint" style="margin:1.2rem 0 0.5rem;"><strong>婚姻歴・子供の有無ティア（上限10点・男女共通）</strong></p>
+    <div class="weight-table-wrap">
+      <table class="weight-table">
+        <thead><tr><th scope="col">婚姻歴・子供の有無</th><th scope="col">得点</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">再婚・子供あり（同居）</th><td>2点</td></tr>
+          <tr><th scope="row">再婚・子供あり（別居）</th><td>4点</td></tr>
+          <tr><th scope="row">再婚・子供なし</th><td>7点</td></tr>
+          <tr><th scope="row">初婚・子供なし</th><td>10点</td></tr>
         </tbody>
       </table>
     </div>
@@ -186,48 +204,45 @@
     <p class="eyebrow">06</p>
     <h2>年齢の総合倍率</h2>
     <p class="hint">
-      年齢は上の加点（04章）に加えて、最終スコア全体への<strong>倍率</strong>としても効きます。
-      「理想的な年齢の窓（window）」の中なら倍率×1.00。窓から外れると、外れ具合に応じて倍率が下がっていき、
-      最終的に「フロア（下限倍率）」で頭打ちになります。
+      年齢はここまでの加点（03〜05章）を持たず、最終スコア全体への<strong>倍率</strong>としてのみ効きます。
+      「ピーク年齢」を頂点とした単峰（山なり）の連続カーブで、ピークで倍率×1.00、そこから離れるほど
+      滑らかに倍率が下がっていき、最終的に「フロア（下限倍率）」に漸近します。
+      ピークより若い側は σLo、上の側は σHi で減衰の緩急を分けており、平坦な「安全窓」は設けていません。
     </p>
-    <div class="formula-box">windowLo ≦ 年齢 ≦ windowHi の場合 → 倍率 = 1.00
+    <div class="formula-box">年齢 &lt; ピーク の場合 → σ = σLo　／　年齢 ≧ ピーク の場合 → σ = σHi
 
-年齢 &lt; windowLo の場合
-　倍率 = floor +（1 − floor）× e^（−（windowLo − 年齢）² ÷（2 × σLo²））
-
-年齢 &gt; windowHi の場合
-　倍率 = floor +（1 − floor）× e^（−（年齢 − windowHi）² ÷（2 × σHi²））</div>
+倍率 = floor +（1 − floor）× e^（−（年齢 − ピーク）² ÷（2 × σ²））</div>
     <div class="weight-table-wrap">
       <table class="weight-table">
         <thead>
-          <tr><th scope="col">性別</th><th scope="col">windowLo</th><th scope="col">windowHi</th><th scope="col">σLo</th><th scope="col">σHi</th><th scope="col">floor</th></tr>
+          <tr><th scope="col">性別</th><th scope="col">ピーク</th><th scope="col">σLo</th><th scope="col">σHi</th><th scope="col">floor</th></tr>
         </thead>
         <tbody>
-          <tr><th scope="row">男性</th><td>27歳</td><td>35歳</td><td>7</td><td>8</td><td>0.25</td></tr>
-          <tr><th scope="row">女性</th><td>23歳</td><td>28歳</td><td>5</td><td>7</td><td>0.20</td></tr>
+          <tr><th scope="row">男性</th><td>31歳</td><td>16</td><td>8</td><td>0.25</td></tr>
+          <tr><th scope="row">女性</th><td>25.5歳</td><td>20</td><td>7</td><td>0.20</td></tr>
         </tbody>
       </table>
     </div>
 
     <p class="hint">
-      重要な点として、倍率は「年齢以外の得点」にだけかかります。年齢自体の加点（04章）はそのまま残るので、
-      年齢の悪さが加点と倍率で二重にペナルティにならないようにしています。
+      倍率は年齢以外の得点（03〜05章の合計）にだけかかります。年齢そのものの加点枠はもう存在しないため、
+      二重ペナルティにはなりません。
     </p>
-    <div class="formula-box">最終スコア = 年齢の加点 +（年齢以外の得点の合計）× 年齢の総合倍率</div>
+    <div class="formula-box">最終スコア = （年齢以外の得点の合計）× 年齢の総合倍率</div>
 
     <p class="hint" style="margin-top:1.4rem;">
       <strong>男性: 年収による年齢レスキュー。</strong>
-      「年収が高ければ年齢の高さをある程度カバーできる」という傾向を反映し、年収に応じて windowHi と floor を引き上げます。
+      「年収が高ければ年齢の高さをある程度カバーできる」という傾向を反映し、年収に応じてピーク年齢と floor を引き上げます。
     </p>
-    <div class="formula-box">windowHi += min(12, 年収 ÷ 250)　　floor = min(0.6, 0.25 + 年収 ÷ 15000)</div>
-    <p class="hint" style="margin-bottom:0;">例: 年収400万・60歳 → 倍率 概ね×0.29 ／ 年収3000万・60歳 → 倍率 概ね×0.60</p>
+    <div class="formula-box">ピーク += min(12, 年収 ÷ 250)　　floor = min(0.6, 0.25 + 年収 ÷ 15000)</div>
+    <p class="hint" style="margin-bottom:0;">例: 年収400万・60歳 → 倍率 概ね×0.28 ／ 年収3000万・60歳 → 倍率 概ね×0.51</p>
 
     <p class="hint" style="margin-top:1.4rem;">
       <strong>女性: 顔立ちによる年齢レスキュー。</strong>
-      「顔立ちが良ければ年齢を重ねても価値が保たれやすい」という傾向を反映し、顔立ちスコア（04章とは別に、02章の配点で算出した点数）に応じて windowHi と floor を引き上げます。
+      「顔立ちが良ければ年齢を重ねても価値が保たれやすい」という傾向を反映し、顔立ち得点（02章の配点で算出した点数）に応じてピーク年齢と floor を引き上げます。
     </p>
-    <div class="formula-box">windowHi += min(5, 顔立ち得点 ÷ 4)　　floor = min(0.3, 0.20 + 顔立ち得点 × 0.006)</div>
-    <p class="hint" style="margin-bottom:0;">例: 顔立ち普通・35歳 → 倍率 概ね×0.89 ／ 顔立ちが高い・35歳 → 倍率 概ね×0.97</p>
+    <div class="formula-box">ピーク += min(5, 顔立ち得点 ÷ 4)　　floor = min(0.3, 0.20 + 顔立ち得点 × 0.006)</div>
+    <p class="hint" style="margin-bottom:0;">例: 顔立ち普通・35歳 → 倍率 概ね×0.84 ／ 顔立ちが高い・35歳 → 倍率 概ね×0.87</p>
   </section>
 
   <section class="card">
@@ -264,8 +279,9 @@
     <h2>「相応しい条件」の逆算ロジック</h2>
     <p class="hint" style="margin-bottom:0;">
       自分の最終スコアを100で割った比率 r を、相手の性別の各カテゴリに当てはめて逆算しています。
-      年収は「r 相当の得点になる最低ライン」を対数計算で、年齢・身長は「r 相当の得点になる範囲」を正規分布の等高線として、
-      職業は得点が最も近いティアを、外見・体型・性格は r に対応するレベル（1〜5）を、それぞれ表示しています。
+      年収は「r 相当の得点になる最低ライン」を対数計算で、身長は「r 相当の得点になる範囲」を正規分布の等高線として、
+      職業・学歴・婚姻歴は得点が最も近いティアを、外見・体型・性格は r に対応するレベル（1〜5）を、それぞれ表示しています。
+      年齢だけは専用のロジックで、06章の倍率カーブを r で逆算し「倍率が r 以上になりやすい年齢範囲」を σLo・σHi 別に算出して表示しています（男性の年収・女性の顔立ちによるレスキュー分は含めない基準カーブでの目安です）。
       あくまで「同じくらいの得点バランスになりやすい目安」であり、厳密な最適化ではありません。
     </p>
   </section>
