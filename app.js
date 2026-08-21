@@ -57,14 +57,33 @@ const AGE_MULTIPLIER = {
   female: { windowLo: 23, windowHi: 28, sigmaLo: 5, sigmaHi: 7, floor: 0.2 },
 };
 
-function ageMultiplier(genderKey, age) {
+// 「女性は年齢がほぼ絶対条件、男性は年収が高ければ年齢の高さをある程度
+// カバーできる」という非対称な傾向を反映し、男性のみ年収に応じて
+// 年齢の上限窓(windowHi)とフロア(floor)を引き上げる。女性側は年収による
+// 補正を行わない。
+const MALE_AGE_INCOME_RESCUE = {
+  yearsPerManYen: 250, // 年収250万円ごとに許容年齢+1歳
+  maxBonusYears: 12,
+  floorPerManYen: 15000, // 年収が高いほどフロアも底上げ
+  floorCap: 0.6,
+};
+
+function ageMultiplier(genderKey, age, income) {
   const cfg = AGE_MULTIPLIER[genderKey];
   const a = Number(age) || 0;
-  if (a >= cfg.windowLo && a <= cfg.windowHi) return 1;
+  let windowHi = cfg.windowHi;
+  let floor = cfg.floor;
+  if (genderKey === "male") {
+    const inc = Math.max(0, Number(income) || 0);
+    const r = MALE_AGE_INCOME_RESCUE;
+    windowHi += Math.min(r.maxBonusYears, inc / r.yearsPerManYen);
+    floor = Math.min(r.floorCap, cfg.floor + inc / r.floorPerManYen);
+  }
+  if (a >= cfg.windowLo && a <= windowHi) return 1;
   if (a < cfg.windowLo) {
     return cfg.floor + (1 - cfg.floor) * Math.exp(-((cfg.windowLo - a) ** 2) / (2 * cfg.sigmaLo * cfg.sigmaLo));
   }
-  return cfg.floor + (1 - cfg.floor) * Math.exp(-((a - cfg.windowHi) ** 2) / (2 * cfg.sigmaHi * cfg.sigmaHi));
+  return floor + (1 - floor) * Math.exp(-((a - windowHi) ** 2) / (2 * cfg.sigmaHi * cfg.sigmaHi));
 }
 
 const CATEGORIES = {
@@ -125,7 +144,7 @@ function scoreProfile(genderKey, values) {
     }
     breakdown.push({ ...cat, points, ratio: points / cat.max });
   });
-  const multiplier = ageMultiplier(genderKey, values.age);
+  const multiplier = ageMultiplier(genderKey, values.age, values.income);
   // 年齢は「加点」と「倍率」で役割を分ける。年齢自体の評価は加点(ageCategoryPoints)で
   // 表現し、倍率は年齢以外の項目にだけかける。こうしないと年齢の悪さが
   // 加点でも倍率でも二重にペナルティになってしまう。
