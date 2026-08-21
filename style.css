@@ -388,6 +388,14 @@ input[type="range"] {
   margin-bottom: 0;
 }
 
+.hensachi-note {
+  margin-top: 0.3rem;
+  margin-bottom: 0;
+  color: var(--gold);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
+}
+
 .breakdown {
   margin-top: 1.3rem;
   display: flex;

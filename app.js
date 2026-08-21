@@ -53,8 +53,8 @@ const FEMALE_JOB_TIERS = [
 // 「他の項目がどれだけ高くても、理想的な年齢層から離れるほど頭打ちになる」という
 // 婚活市場でよく言われる傾向を表現するための係数。
 const AGE_MULTIPLIER = {
-  male: { windowLo: 26, windowHi: 38, sigmaLo: 9, sigmaHi: 11, floor: 0.4 },
-  female: { windowLo: 22, windowHi: 29, sigmaLo: 6, sigmaHi: 10, floor: 0.35 },
+  male: { windowLo: 27, windowHi: 35, sigmaLo: 7, sigmaHi: 8, floor: 0.25 },
+  female: { windowLo: 23, windowHi: 28, sigmaLo: 5, sigmaHi: 7, floor: 0.2 },
 };
 
 function ageMultiplier(genderKey, age) {
@@ -123,6 +123,17 @@ function scoreProfile(genderKey, values) {
   const multiplier = ageMultiplier(genderKey, values.age);
   const total = Math.round(rawTotal * multiplier * 10) / 10;
   return { total, rawTotal: Math.round(rawTotal * 10) / 10, multiplier, breakdown };
+}
+
+// 偏差値換算はあくまで参考値。実際の受験者集団のような統計データは存在しないため、
+// 「典型的な入力値（普通レベルの自己評価など）でおよそ65点前後になる」という
+// このツール自身の設計上の目安を平均とみなし、標準偏差15を仮定して算出している。
+const HENSACHI_ASSUMED_MEAN = 65;
+const HENSACHI_ASSUMED_SD = 15;
+
+function toHensachi(score) {
+  const raw = 50 + (10 * (score - HENSACHI_ASSUMED_MEAN)) / HENSACHI_ASSUMED_SD;
+  return Math.round(Math.max(20, Math.min(90, raw)) * 10) / 10;
 }
 
 function rankOf(score) {
@@ -307,6 +318,7 @@ function handleSelfSubmit(e) {
   document.getElementById("self-score-value").textContent = total.toFixed(1);
   document.getElementById("self-rank-label").textContent = rank.label;
   document.getElementById("self-rank-desc").textContent = rank.desc;
+  document.getElementById("self-hensachi-note").textContent = `偏差値目安 ${toHensachi(total).toFixed(1)}`;
   renderBreakdown(document.getElementById("self-breakdown"), breakdown);
   renderMultiplierNote("self-multiplier-note", rawTotal, multiplier, total);
   document.getElementById("self-result").hidden = false;
@@ -336,6 +348,7 @@ function handlePartnerSubmit(e) {
   document.getElementById("partner-score-value").textContent = total.toFixed(1);
   document.getElementById("partner-rank-label").textContent = rank.label;
   document.getElementById("partner-rank-desc").textContent = rank.desc;
+  document.getElementById("partner-hensachi-note").textContent = `偏差値目安 ${toHensachi(total).toFixed(1)}`;
   renderBreakdown(document.getElementById("partner-breakdown"), breakdown);
   renderMultiplierNote("partner-multiplier-note", rawTotal, multiplier, total);
 
