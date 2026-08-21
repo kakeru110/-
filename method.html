@@ -57,6 +57,7 @@
     <p class="hint">
       「男性は経済力、女性は年齢・外見が重視されやすい」という婚活市場の一般的な傾向を踏まえて配点しています。
       「外見」は顔立ちと体型で評価軸が異なるため分けて算入し、職業は男女それぞれ「人気・注目されやすい職種」の傾向を反映した別のティア表です。
+      学歴は「学歴フィルター」が話題になりやすい男性のみの項目です。
     </p>
     <div class="weight-table-wrap">
       <table class="weight-table">
@@ -68,12 +69,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr><th scope="row">年収</th><td>35点</td><td>10点</td></tr>
+          <tr><th scope="row">年収</th><td>30点</td><td>10点</td></tr>
           <tr><th scope="row">年齢</th><td>15点</td><td>30点</td></tr>
           <tr><th scope="row">顔立ち</th><td>10点</td><td>20点</td></tr>
           <tr><th scope="row">体型</th><td>5点</td><td>10点</td></tr>
           <tr><th scope="row">身長</th><td>15点</td><td>5点</td></tr>
-          <tr><th scope="row">職業</th><td>15点</td><td>10点</td></tr>
+          <tr><th scope="row">職業</th><td>10点</td><td>10点</td></tr>
+          <tr><th scope="row">学歴</th><td>10点</td><td>—</td></tr>
           <tr><th scope="row">性格・家庭的な面</th><td>5点</td><td>15点</td></tr>
         </tbody>
         <tfoot>
@@ -95,13 +97,13 @@
       <table class="weight-table">
         <thead><tr><th scope="col">性別</th><th scope="col">上限点</th><th scope="col">k（万円）</th></tr></thead>
         <tbody>
-          <tr><th scope="row">男性</th><td>35点</td><td>700</td></tr>
+          <tr><th scope="row">男性</th><td>30点</td><td>700</td></tr>
           <tr><th scope="row">女性</th><td>10点</td><td>500</td></tr>
         </tbody>
       </table>
     </div>
     <p class="hint" style="margin-bottom:0;">
-      例（男性）: 年収400万 → 15.2点 / 年収700万 → 22.1点 / 年収1500万 → 30.9点 / 年収3000万 → 34.5点
+      例（男性）: 年収400万 → 13.1点 / 年収700万 → 19.0点 / 年収1500万 → 26.5点 / 年収3000万 → 29.6点
     </p>
   </section>
 
@@ -130,22 +132,22 @@
 
   <section class="card">
     <p class="eyebrow">05</p>
-    <h2>職業・外見・体型・性格の計算式</h2>
-    <p class="hint">職業は男女別のティア表から該当する得点を直接参照します。外見・体型・性格は5段階の自己評価スライダーを配点まで線形に変換します。</p>
+    <h2>職業・学歴・外見・体型・性格の計算式</h2>
+    <p class="hint">職業・学歴は男女別（学歴は男性のみ）のティア表から該当する得点を直接参照します。外見・体型・性格は5段階の自己評価スライダーを配点まで線形に変換します。</p>
     <div class="formula-box">スライダー系の得点 = （レベル ÷ 5）× 上限点</div>
 
-    <p class="hint" style="margin-bottom:0.5rem;"><strong>男性の職業ティア（上限15点）</strong></p>
+    <p class="hint" style="margin-bottom:0.5rem;"><strong>男性の職業ティア（上限10点）</strong></p>
     <div class="weight-table-wrap">
       <table class="weight-table">
         <thead><tr><th scope="col">職業・雇用形態</th><th scope="col">得点</th></tr></thead>
         <tbody>
-          <tr><th scope="row">学生・無職・その他</th><td>2点</td></tr>
-          <tr><th scope="row">契約・派遣・非正規</th><td>5点</td></tr>
-          <tr><th scope="row">自営業・フリーランス</th><td>7点</td></tr>
-          <tr><th scope="row">中小企業正社員（一般職）</th><td>9点</td></tr>
-          <tr><th scope="row">大手・中堅企業（総合職）</th><td>11点</td></tr>
-          <tr><th scope="row">公務員・教員</th><td>12点</td></tr>
-          <tr><th scope="row">医師・士業（弁護士・会計士等）</th><td>15点</td></tr>
+          <tr><th scope="row">学生・無職・その他</th><td>1点</td></tr>
+          <tr><th scope="row">契約・派遣・非正規</th><td>3点</td></tr>
+          <tr><th scope="row">自営業・フリーランス</th><td>5点</td></tr>
+          <tr><th scope="row">中小企業正社員（一般職）</th><td>6点</td></tr>
+          <tr><th scope="row">大手・中堅企業（総合職）</th><td>7点</td></tr>
+          <tr><th scope="row">公務員・教員</th><td>8点</td></tr>
+          <tr><th scope="row">医師・士業（弁護士・会計士等）</th><td>10点</td></tr>
         </tbody>
       </table>
     </div>
@@ -161,6 +163,20 @@
           <tr><th scope="row">大手企業総合職・公務員・教員</th><td>7点</td></tr>
           <tr><th scope="row">看護師・薬剤師などの専門職</th><td>8点</td></tr>
           <tr><th scope="row">客室乗務員（CA）・アナウンサー・医師/士業</th><td>10点</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="hint" style="margin:1.2rem 0 0.5rem;"><strong>男性の学歴ティア（上限10点・女性は対象外）</strong></p>
+    <div class="weight-table-wrap">
+      <table class="weight-table">
+        <thead><tr><th scope="col">学歴</th><th scope="col">得点</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">高校卒・中卒</th><td>2点</td></tr>
+          <tr><th scope="row">専門学校・短大卒</th><td>4点</td></tr>
+          <tr><th scope="row">大学卒（日東駒専未満）</th><td>5点</td></tr>
+          <tr><th scope="row">大学卒（日東駒専〜MARCH）</th><td>7点</td></tr>
+          <tr><th scope="row">大学卒（早慶・旧帝大等の難関大）</th><td>10点</td></tr>
         </tbody>
       </table>
     </div>

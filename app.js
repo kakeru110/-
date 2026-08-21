@@ -31,13 +31,13 @@ const PERSONALITY_LABELS = [
 ];
 
 const MALE_JOB_TIERS = [
-  { value: "student", label: "学生・無職・その他", points: 2 },
-  { value: "nonregular", label: "契約・派遣・非正規", points: 5 },
-  { value: "freelance", label: "自営業・フリーランス", points: 7 },
-  { value: "sme", label: "中小企業正社員（一般職）", points: 9 },
-  { value: "corporate", label: "大手・中堅企業（総合職）", points: 11 },
-  { value: "public", label: "公務員・教員", points: 12 },
-  { value: "specialist", label: "医師・士業（弁護士・会計士等）", points: 15 },
+  { value: "student", label: "学生・無職・その他", points: 1 },
+  { value: "nonregular", label: "契約・派遣・非正規", points: 3 },
+  { value: "freelance", label: "自営業・フリーランス", points: 5 },
+  { value: "sme", label: "中小企業正社員（一般職）", points: 6 },
+  { value: "corporate", label: "大手・中堅企業（総合職）", points: 7 },
+  { value: "public", label: "公務員・教員", points: 8 },
+  { value: "specialist", label: "医師・士業（弁護士・会計士等）", points: 10 },
 ];
 
 const FEMALE_JOB_TIERS = [
