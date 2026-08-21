@@ -49,6 +49,16 @@ const FEMALE_JOB_TIERS = [
   { value: "glamour", label: "客室乗務員（CA）・アナウンサー・医師/士業", points: 10 },
 ];
 
+// 婚活市場で「学歴フィルター」としてよく言及される大学の序列（日東駒専・MARCH等）を
+// 踏まえた男性のみの学歴ティア。
+const MALE_EDUCATION_TIERS = [
+  { value: "highschool", label: "高校卒・中卒", points: 2 },
+  { value: "vocational", label: "専門学校・短大卒", points: 4 },
+  { value: "university_low", label: "大学卒（日東駒専未満）", points: 5 },
+  { value: "university_mid", label: "大学卒（日東駒専〜MARCH）", points: 7 },
+  { value: "university_top", label: "大学卒（早慶・旧帝大等の難関大）", points: 10 },
+];
+
 // 年齢は加点だけでなく、最終スコア全体への倍率としても効かせる。
 // 「他の項目がどれだけ高くても、理想的な年齢層から離れるほど頭打ちになる」という
 // 婚活市場でよく言われる傾向を表現するための係数。
@@ -103,10 +113,11 @@ function ageMultiplier(genderKey, age, rescueValue) {
 
 const CATEGORIES = {
   male: [
-    { key: "income", label: "年収", type: "income", cap: 35, max: 35, k: 700, unit: "万円", plausible: [0, 10000] },
+    { key: "income", label: "年収", type: "income", cap: 30, max: 30, k: 700, unit: "万円", plausible: [0, 10000] },
     { key: "age", label: "年齢", type: "gaussian", max: 15, floor: 5, peak: 30, sigma: 12, unit: "歳", plausible: [20, 70] },
     { key: "height", label: "身長", type: "gaussian", max: 15, floor: 3, peak: 178, sigma: 10, unit: "cm", plausible: [150, 200] },
-    { key: "job", label: "職業・雇用形態", type: "discrete", max: 15, tiers: MALE_JOB_TIERS },
+    { key: "job", label: "職業・雇用形態", type: "discrete", max: 10, tiers: MALE_JOB_TIERS },
+    { key: "education", label: "学歴", type: "discrete", max: 10, tiers: MALE_EDUCATION_TIERS },
     { key: "appearance", label: "顔立ち", type: "slider", max: 10, labels: APPEARANCE_LABELS },
     { key: "body", label: "体型", type: "slider", max: 5, labels: BODY_LABELS },
     { key: "personality", label: "性格・コミュ力", type: "slider", max: 5, labels: PERSONALITY_LABELS },
@@ -311,6 +322,7 @@ function readForm(prefix) {
       age: document.getElementById(`${prefix}-age`).value,
       height: document.getElementById(`${prefix}-height`).value,
       job: document.getElementById(`${prefix}-job`).value,
+      education: document.getElementById(`${prefix}-education`).value,
       appearance: document.getElementById(`${prefix}-appearance`).value,
       body: document.getElementById(`${prefix}-body`).value,
       personality: document.getElementById(`${prefix}-personality`).value,
@@ -329,13 +341,19 @@ function populateJobOptions(prefix) {
     : tiers[Math.floor(tiers.length / 2)].value;
 }
 
+function toggleEducationRow(prefix) {
+  const gender = document.querySelector(`input[name="${prefix}-gender"]:checked`).value;
+  const row = document.getElementById(`${prefix}-education-row`);
+  row.hidden = gender !== "male";
+}
+
 function updateWeightBadges(prefix) {
   const gender = document.querySelector(`input[name="${prefix}-gender"]:checked`).value;
   const weightByKey = {};
   CATEGORIES[gender].forEach((cat) => {
     weightByKey[cat.key] = cat.max;
   });
-  ["age", "height", "income", "job", "appearance", "body", "personality"].forEach((key) => {
+  ["age", "height", "income", "job", "education", "appearance", "body", "personality"].forEach((key) => {
     const badge = document.getElementById(`${prefix}-${key}-weight`);
     if (!badge) return;
     if (weightByKey[key] !== undefined) {
@@ -416,6 +434,7 @@ function handleSelfSubmit(e) {
   if (partnerGenderInput) {
     partnerGenderInput.checked = true;
     populateJobOptions("partner");
+    toggleEducationRow("partner");
     updateWeightBadges("partner");
   }
   document.getElementById("partner-section").hidden = false;
@@ -472,12 +491,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('input[name="self-gender"]').forEach((el) =>
     el.addEventListener("change", () => {
       populateJobOptions("self");
+      toggleEducationRow("self");
       updateWeightBadges("self");
     })
   );
   document.querySelectorAll('input[name="partner-gender"]').forEach((el) =>
     el.addEventListener("change", () => {
       populateJobOptions("partner");
+      toggleEducationRow("partner");
       updateWeightBadges("partner");
     })
   );
@@ -493,6 +514,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   populateJobOptions("self");
   populateJobOptions("partner");
+  toggleEducationRow("self");
+  toggleEducationRow("partner");
   updateWeightBadges("self");
   updateWeightBadges("partner");
   updateSelfLiveLabels();
