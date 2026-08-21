@@ -184,6 +184,20 @@ body {
   color: var(--gold);
 }
 
+.formula-box {
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  color: var(--ink);
+  margin: 0.8rem 0;
+}
+
 .weight-table-wrap {
   overflow-x: auto;
 }
@@ -525,4 +539,12 @@ input[type="range"] {
 
 .page-footer p {
   margin: 0;
+}
+
+.page-footer p + p {
+  margin-top: 0.4rem;
+}
+
+a {
+  color: var(--accent);
 }
