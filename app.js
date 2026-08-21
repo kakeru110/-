@@ -113,16 +113,32 @@ function scoreCategory(cat, rawValue) {
 
 function scoreProfile(genderKey, values) {
   const cats = CATEGORIES[genderKey];
-  let rawTotal = 0;
+  let ageCategoryPoints = 0;
+  let otherRawTotal = 0;
   const breakdown = [];
   cats.forEach((cat) => {
     const points = scoreCategory(cat, values[cat.key]);
-    rawTotal += points;
+    if (cat.key === "age") {
+      ageCategoryPoints = points;
+    } else {
+      otherRawTotal += points;
+    }
     breakdown.push({ ...cat, points, ratio: points / cat.max });
   });
   const multiplier = ageMultiplier(genderKey, values.age);
-  const total = Math.round(rawTotal * multiplier * 10) / 10;
-  return { total, rawTotal: Math.round(rawTotal * 10) / 10, multiplier, breakdown };
+  // 年齢は「加点」と「倍率」で役割を分ける。年齢自体の評価は加点(ageCategoryPoints)で
+  // 表現し、倍率は年齢以外の項目にだけかける。こうしないと年齢の悪さが
+  // 加点でも倍率でも二重にペナルティになってしまう。
+  const rawTotal = ageCategoryPoints + otherRawTotal;
+  const total = Math.round((ageCategoryPoints + otherRawTotal * multiplier) * 10) / 10;
+  return {
+    total,
+    rawTotal: Math.round(rawTotal * 10) / 10,
+    ageCategoryPoints: Math.round(ageCategoryPoints * 10) / 10,
+    otherRawTotal: Math.round(otherRawTotal * 10) / 10,
+    multiplier,
+    breakdown,
+  };
 }
 
 // 偏差値換算はあくまで参考値。実際の受験者集団のような統計データは存在しないため、
@@ -300,17 +316,17 @@ function updatePartnerLiveLabels() {
     PERSONALITY_LABELS[document.getElementById("partner-personality").value - 1];
 }
 
-function renderMultiplierNote(elementId, rawTotal, multiplier, total) {
+function renderMultiplierNote(elementId, ageCategoryPoints, otherRawTotal, multiplier, total) {
   const el = document.getElementById(elementId);
   el.textContent =
-    `基礎点 ${rawTotal.toFixed(1)}点 × 年齢による総合倍率 ${multiplier.toFixed(2)} ` +
+    `年齢の加点 ${ageCategoryPoints.toFixed(1)}点 + その他の得点 ${otherRawTotal.toFixed(1)}点 × 年齢倍率 ${multiplier.toFixed(2)} ` +
     `＝ 最終 ${total.toFixed(1)}点`;
 }
 
 function handleSelfSubmit(e) {
   e.preventDefault();
   const { gender, values } = readForm("self");
-  const { total, rawTotal, multiplier, breakdown } = scoreProfile(gender, values);
+  const { total, ageCategoryPoints, otherRawTotal, multiplier, breakdown } = scoreProfile(gender, values);
   ownScoreState = total;
   ownGenderState = gender;
 
@@ -320,7 +336,7 @@ function handleSelfSubmit(e) {
   document.getElementById("self-rank-desc").textContent = rank.desc;
   document.getElementById("self-hensachi-note").textContent = `偏差値目安 ${toHensachi(total).toFixed(1)}`;
   renderBreakdown(document.getElementById("self-breakdown"), breakdown);
-  renderMultiplierNote("self-multiplier-note", rawTotal, multiplier, total);
+  renderMultiplierNote("self-multiplier-note", ageCategoryPoints, otherRawTotal, multiplier, total);
   document.getElementById("self-result").hidden = false;
 
   // 相手の性別デフォルトを異性に、パートナーフォームを表示
@@ -342,7 +358,7 @@ function handlePartnerSubmit(e) {
   e.preventDefault();
   if (ownScoreState === null) return;
   const { gender, values } = readForm("partner");
-  const { total, rawTotal, multiplier, breakdown } = scoreProfile(gender, values);
+  const { total, ageCategoryPoints, otherRawTotal, multiplier, breakdown } = scoreProfile(gender, values);
 
   const rank = rankOf(total);
   document.getElementById("partner-score-value").textContent = total.toFixed(1);
@@ -350,7 +366,7 @@ function handlePartnerSubmit(e) {
   document.getElementById("partner-rank-desc").textContent = rank.desc;
   document.getElementById("partner-hensachi-note").textContent = `偏差値目安 ${toHensachi(total).toFixed(1)}`;
   renderBreakdown(document.getElementById("partner-breakdown"), breakdown);
-  renderMultiplierNote("partner-multiplier-note", rawTotal, multiplier, total);
+  renderMultiplierNote("partner-multiplier-note", ageCategoryPoints, otherRawTotal, multiplier, total);
 
   const diff = Math.round((ownScoreState - total) * 10) / 10;
   const v = verdictOf(diff);
