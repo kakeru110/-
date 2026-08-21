@@ -68,16 +68,31 @@ const MALE_AGE_INCOME_RESCUE = {
   floorCap: 0.6,
 };
 
-function ageMultiplier(genderKey, age, income) {
+// 男性の年収レスキューと対になる仕組み。「美人は年齢を重ねても市場価値が
+// 保たれやすい」という傾向を反映し、顔立ちスコアが高い女性ほど年齢の
+// 上限窓とフロアが引き上がる。外見が平均的な女性は今まで通り厳しいまま。
+const FEMALE_AGE_APPEARANCE_RESCUE = {
+  pointsPerYear: 4, // 顔立ちスコア4点ごとに許容年齢+1歳
+  maxBonusYears: 5,
+  floorPerPoint: 0.006,
+  floorCap: 0.3,
+};
+
+function ageMultiplier(genderKey, age, rescueValue) {
   const cfg = AGE_MULTIPLIER[genderKey];
   const a = Number(age) || 0;
   let windowHi = cfg.windowHi;
   let floor = cfg.floor;
   if (genderKey === "male") {
-    const inc = Math.max(0, Number(income) || 0);
+    const inc = Math.max(0, Number(rescueValue) || 0);
     const r = MALE_AGE_INCOME_RESCUE;
     windowHi += Math.min(r.maxBonusYears, inc / r.yearsPerManYen);
     floor = Math.min(r.floorCap, cfg.floor + inc / r.floorPerManYen);
+  } else if (genderKey === "female") {
+    const app = Math.max(0, Number(rescueValue) || 0);
+    const r = FEMALE_AGE_APPEARANCE_RESCUE;
+    windowHi += Math.min(r.maxBonusYears, app / r.pointsPerYear);
+    floor = Math.min(r.floorCap, cfg.floor + app * r.floorPerPoint);
   }
   if (a >= cfg.windowLo && a <= windowHi) return 1;
   if (a < cfg.windowLo) {
@@ -134,6 +149,7 @@ function scoreProfile(genderKey, values) {
   const cats = CATEGORIES[genderKey];
   let ageCategoryPoints = 0;
   let otherRawTotal = 0;
+  let appearancePoints = 0;
   const breakdown = [];
   cats.forEach((cat) => {
     const points = scoreCategory(cat, values[cat.key]);
@@ -142,9 +158,13 @@ function scoreProfile(genderKey, values) {
     } else {
       otherRawTotal += points;
     }
+    if (cat.key === "appearance") {
+      appearancePoints = points;
+    }
     breakdown.push({ ...cat, points, ratio: points / cat.max });
   });
-  const multiplier = ageMultiplier(genderKey, values.age, values.income);
+  const ageRescueValue = genderKey === "male" ? values.income : appearancePoints;
+  const multiplier = ageMultiplier(genderKey, values.age, ageRescueValue);
   // 年齢は「加点」と「倍率」で役割を分ける。年齢自体の評価は加点(ageCategoryPoints)で
   // 表現し、倍率は年齢以外の項目にだけかける。こうしないと年齢の悪さが
   // 加点でも倍率でも二重にペナルティになってしまう。
