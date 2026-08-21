@@ -262,6 +262,42 @@ body {
   display: none;
 }
 
+.checkbox-field {
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-field span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.checkbox-field input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--accent);
+}
+
+.range-row {
+  flex-direction: row;
+  gap: 1rem;
+  margin-top: -0.4rem;
+}
+
+.range-row label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+}
+
 .field legend {
   padding: 0;
   font-weight: 600;
@@ -415,6 +451,32 @@ input[type="range"] {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.rarity-headline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.rarity-count {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.1;
+}
+
+.rarity-sub {
+  color: var(--ink-muted);
+  font-size: 0.92rem;
+}
+
+.rarity-odds {
+  margin: 0.5rem 0 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.85rem;
+  color: var(--gold);
 }
 
 .multiplier-note {

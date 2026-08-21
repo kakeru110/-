@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>理想の相手、実際どれくらいいる？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead">
+    <div class="seal-mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" width="40" height="40">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <circle cx="32" cy="32" r="23" fill="none" stroke="currentColor" stroke-width="1"/>
+        <path d="M32 20 L36 29 L46 30 L38.5 37 L40.5 47 L32 42 L23.5 47 L25.5 37 L18 30 L28 29 Z" fill="currentColor"/>
+      </svg>
+    </div>
+    <p class="masthead-eyebrow">RARITY CHECK</p>
+    <h1>理想の相手、実際どれくらいいる？</h1>
+    <p class="subtitle">求める条件をすべて満たす異性が、同性人口のどれくらいの割合・人数いそうかを推定します</p>
+  </header>
+
+  <section class="disclaimer">
+    <strong>本ページについて:</strong>
+    年齢・年収・身長などの人口分布や職業の割合は、公的統計そのものではなく「大まかにこのくらいだろう」という
+    目安として仮定した概算値です。また各項目は独立している（互いに無関係）と仮定して掛け合わせて計算しているため、
+    実際には項目間の相関（例: 年収と職業）で数値がずれます。エンタメ用途の参考値としてご覧ください。
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">STEP 1</p>
+    <h2>求める条件を選ぶ</h2>
+    <p class="hint">こだわりたい項目だけチェックを入れてください。チェックしない項目は「問わない」として計算します。</p>
+
+    <form id="rarity-form">
+      <fieldset class="field">
+        <legend>相手の性別</legend>
+        <label><input type="radio" name="rarity-gender" value="male"> 男性</label>
+        <label><input type="radio" name="rarity-gender" value="female" checked> 女性</label>
+      </fieldset>
+
+      <label class="field checkbox-field">
+        <span><input type="checkbox" id="c-age"> 年齢にこだわる</span>
+      </label>
+      <div class="field range-row">
+        <label>下限<input type="number" id="age-lo" min="20" max="59" value="25"></label>
+        <label>上限<input type="number" id="age-hi" min="20" max="59" value="35"></label>
+      </div>
+
+      <label class="field checkbox-field">
+        <span><input type="checkbox" id="c-income"> 年収にこだわる</span>
+      </label>
+      <label class="field">
+        <span>年収の下限 (万円以上)</span>
+        <input type="number" id="income-min" min="0" max="10000" step="10" value="500">
+      </label>
+
+      <label class="field checkbox-field">
+        <span><input type="checkbox" id="c-height"> 身長にこだわる</span>
+      </label>
+      <label class="field">
+        <span>身長の下限 (cm以上)</span>
+        <input type="number" id="height-min" min="130" max="220" value="170">
+      </label>
+
+      <label class="field checkbox-field">
+        <span><input type="checkbox" id="c-job"> 職業にこだわる</span>
+      </label>
+      <label class="field">
+        <span>この職業ランク以上</span>
+        <select id="job-min"></select>
+      </label>
+
+      <label class="field checkbox-field">
+        <span><input type="checkbox" id="c-appearance"> 顔立ちにこだわる</span>
+      </label>
+      <label class="field">
+        <span>このレベル以上</span>
+        <select id="appearance-min">
+          <option value="1">レベル1（かなり控えめ）以上</option>
+          <option value="2">レベル2（控えめ）以上</option>
+          <option value="3" selected>レベル3（普通）以上</option>
+          <option value="4">レベル4（整っている方）以上</option>
+          <option value="5">レベル5（かなり整っている）以上</option>
+        </select>
+      </label>
+
+      <label class="field checkbox-field">
+        <span><input type="checkbox" id="c-body"> 体型にこだわる</span>
+      </label>
+      <label class="field">
+        <span>このレベル以上</span>
+        <select id="body-min">
+          <option value="1">レベル1（ふくよか）以上</option>
+          <option value="2">レベル2（ややふくよか）以上</option>
+          <option value="3" selected>レベル3（普通体型）以上</option>
+          <option value="4">レベル4（引き締まっている）以上</option>
+          <option value="5">レベル5（スレンダー）以上</option>
+        </select>
+      </label>
+
+      <label class="field checkbox-field">
+        <span><input type="checkbox" id="c-personality"> 性格にこだわる</span>
+      </label>
+      <label class="field">
+        <span>このレベル以上</span>
+        <select id="personality-min">
+          <option value="1">レベル1（かなり要努力）以上</option>
+          <option value="2">レベル2（やや要努力）以上</option>
+          <option value="3" selected>レベル3（普通）以上</option>
+          <option value="4">レベル4（良好）以上</option>
+          <option value="5">レベル5（かなり良好）以上</option>
+        </select>
+      </label>
+
+      <button type="submit" class="btn-primary">推定する</button>
+    </form>
+  </section>
+
+  <section class="card result-card" id="rarity-result" hidden>
+    <p class="eyebrow">RESULT</p>
+    <h2>推定結果</h2>
+    <div class="rarity-headline">
+      <span class="rarity-count" id="rarity-count">-</span>
+      <span class="rarity-sub" id="rarity-sub"></span>
+    </div>
+    <p class="rarity-odds" id="rarity-odds"></p>
+
+    <div class="weight-table-wrap">
+      <table class="weight-table" id="rarity-breakdown-table">
+        <thead>
+          <tr><th scope="col">項目</th><th scope="col">条件</th><th scope="col">該当率</th></tr>
+        </thead>
+        <tbody id="rarity-breakdown-body"></tbody>
+        <tfoot>
+          <tr><th scope="row">合計（すべて満たす）</th><td id="rarity-combined-desc">—</td><td id="rarity-combined-pct">—</td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <p class="hint" style="margin-top:1rem;margin-bottom:0;">
+      各項目の該当率をすべて掛け合わせた数値です（独立と仮定した概算）。実際は項目間の相関があるため、
+      目安として幅を持ってご覧ください。
+    </p>
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">02</p>
+    <h2>推定に使っている前提</h2>
+    <p class="hint">すべて概算の仮定値です。詳しい式やティア表は下記からご確認いただけます。</p>
+    <div class="weight-table-wrap">
+      <table class="weight-table">
+        <thead><tr><th scope="col">前提</th><th scope="col">男性</th><th scope="col">女性</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">母集団（20〜59歳・独身と仮定）</th><td>約1,500万人</td><td>約1,400万人</td></tr>
+          <tr><th scope="row">身長の分布（平均・SD）</th><td>171cm・SD5.5</td><td>158cm・SD5.3</td></tr>
+          <tr><th scope="row">年齢の分布</th><td colspan="2">20〜59歳に一様分布と仮定</td></tr>
+          <tr><th scope="row">顔立ち・体型・性格</th><td colspan="2">レベル3（普通）を中心とした山型分布と仮定</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <p><a href="index.html">← 市場価値を診断する</a>　|　<a href="method.html">算出方法を見る</a></p>
+    <p>婚活市場価値 査定書（エンタメ版）。本ページの推定結果は目安であり、実際の人口分布を保証するものではありません。</p>
+  </footer>
+
+</div>
+<script src="rarity.js"></script>
+</body>
+</html>

@@ -191,6 +191,35 @@ function toHensachi(score) {
   return Math.round(Math.max(20, Math.min(90, raw)) * 10) / 10;
 }
 
+// 標準正規分布の累積分布関数（Abramowitz and Stegun近似）。
+// 偏差値50・SD10の正規分布を仮定した「上位何%」の参考値の算出に使う。
+function erf(x) {
+  const sign = x < 0 ? -1 : 1;
+  const ax = Math.abs(x);
+  const a1 = 0.254829592;
+  const a2 = -0.284496736;
+  const a3 = 1.421413741;
+  const a4 = -1.453152027;
+  const a5 = 1.061405429;
+  const p = 0.3275911;
+  const t = 1 / (1 + p * ax);
+  const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-ax * ax);
+  return sign * y;
+}
+
+function normalCdf(z) {
+  return 0.5 * (1 + erf(z / Math.SQRT2));
+}
+
+function toTopPercent(hensachi) {
+  const z = (hensachi - 50) / 10;
+  const topRatio = 1 - normalCdf(z);
+  const pct = topRatio * 100;
+  if (pct < 0.1) return "0.1";
+  if (pct > 99.9) return "99.9";
+  return pct.toFixed(1);
+}
+
 function rankOf(score) {
   if (score >= 90) return { label: "SS", desc: "市場でごく少数の、超ハイスペック層" };
   if (score >= 80) return { label: "S", desc: "誰から見ても好条件、モテる層" };
@@ -373,7 +402,9 @@ function handleSelfSubmit(e) {
   document.getElementById("self-score-value").textContent = total.toFixed(1);
   document.getElementById("self-rank-label").textContent = rank.label;
   document.getElementById("self-rank-desc").textContent = rank.desc;
-  document.getElementById("self-hensachi-note").textContent = `偏差値目安 ${toHensachi(total).toFixed(1)}`;
+  const selfHensachi = toHensachi(total);
+  document.getElementById("self-hensachi-note").textContent =
+    `偏差値目安 ${selfHensachi.toFixed(1)}（同性の中でおよそ上位 ${toTopPercent(selfHensachi)}%相当）`;
   renderBreakdown(document.getElementById("self-breakdown"), breakdown);
   renderMultiplierNote("self-multiplier-note", ageCategoryPoints, otherRawTotal, multiplier, total);
   document.getElementById("self-result").hidden = false;
@@ -403,7 +434,9 @@ function handlePartnerSubmit(e) {
   document.getElementById("partner-score-value").textContent = total.toFixed(1);
   document.getElementById("partner-rank-label").textContent = rank.label;
   document.getElementById("partner-rank-desc").textContent = rank.desc;
-  document.getElementById("partner-hensachi-note").textContent = `偏差値目安 ${toHensachi(total).toFixed(1)}`;
+  const partnerHensachi = toHensachi(total);
+  document.getElementById("partner-hensachi-note").textContent =
+    `偏差値目安 ${partnerHensachi.toFixed(1)}（同性の中でおよそ上位 ${toTopPercent(partnerHensachi)}%相当）`;
   renderBreakdown(document.getElementById("partner-breakdown"), breakdown);
   renderMultiplierNote("partner-multiplier-note", ageCategoryPoints, otherRawTotal, multiplier, total);
 
