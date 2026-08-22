@@ -252,7 +252,7 @@ function handleSubmit(e) {
     document.getElementById("rarity-count").textContent =
       `${Math.round(1 / combined).toLocaleString("ja-JP")}人に1人`;
     document.getElementById("rarity-sub").textContent =
-      `${genderLabel}人口のおよそ ${formatPercent(combined)}`;
+      `対象母集団（20〜59歳・独身${genderLabel}、${formatCount(population)}）のおよそ ${formatPercent(combined)}`;
     document.getElementById("rarity-odds").textContent = `推定人数: ${formatCount(estimatedCount)}`;
   }
 
