@@ -50,7 +50,7 @@
       「外見」は顔立ちと体型で評価軸が異なるため分けて算入し、職業は男女それぞれで「人気・注目されやすい職種」の傾向を反映して別のティア表にしています。
       学歴は「学歴フィルター」がよく話題になる男性のみの項目です
       （身長は女性では相対的に重視度が低いため小さめの配点です）。
-      性格・人柄は各種調査で「相手に求める条件」の中で一貫して最上位に来る項目のため、他の項目に比べて厚めに配点しています。
+      性格・人柄は各種調査で「相手に求める条件」の中で一貫して最上位に来る項目のため、経済力・外見とは別の独立した枠として厚めに配点しています。
       年齢は加点ではなく、最終スコア全体にかかる<strong>倍率</strong>としてのみ効きます（下記参照）。
     </p>
     <p class="field-group-label" style="margin-top:1.2rem;">年齢（配点なし・倍率のみ）</p>
@@ -80,14 +80,31 @@
           </tr>
         </thead>
         <tbody>
-          <tr><th scope="row">年収</th><td>30点</td><td>10点</td></tr>
-          <tr><th scope="row">職業</th><td>8点</td><td>9点</td></tr>
+          <tr><th scope="row">年収</th><td>33点</td><td>11点</td></tr>
+          <tr><th scope="row">職業</th><td>9点</td><td>10点</td></tr>
           <tr><th scope="row">学歴</th><td>5点</td><td>—</td></tr>
-          <tr><th scope="row">婚姻歴・子供の有無</th><td>9点</td><td>9点</td></tr>
-          <tr><th scope="row">性格・家庭的な面</th><td>16点</td><td>22点</td></tr>
         </tbody>
         <tfoot>
-          <tr><th scope="row">小計</th><td>68点</td><td>50点</td></tr>
+          <tr><th scope="row">小計</th><td>47点</td><td>21点</td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p class="field-group-label">人柄</p>
+    <div class="weight-table-wrap">
+      <table class="weight-table">
+        <thead>
+          <tr>
+            <th scope="col">項目</th>
+            <th scope="col">男性の配点</th>
+            <th scope="col">女性の配点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">性格・家庭的な面</th><td>18点</td><td>24点</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><th scope="row">小計</th><td>18点</td><td>24点</td></tr>
         </tfoot>
       </table>
     </div>
@@ -103,16 +120,20 @@
           </tr>
         </thead>
         <tbody>
-          <tr><th scope="row">顔立ち</th><td>10点</td><td>26点</td></tr>
-          <tr><th scope="row">体型</th><td>9点</td><td>17点</td></tr>
-          <tr><th scope="row">身長</th><td>13点</td><td>7点</td></tr>
+          <tr><th scope="row">顔立ち</th><td>11点</td><td>28点</td></tr>
+          <tr><th scope="row">体型</th><td>10点</td><td>19点</td></tr>
+          <tr><th scope="row">身長</th><td>14点</td><td>8点</td></tr>
         </tbody>
         <tfoot>
-          <tr><th scope="row">小計</th><td>32点</td><td>50点</td></tr>
+          <tr><th scope="row">小計</th><td>35点</td><td>55点</td></tr>
         </tfoot>
       </table>
     </div>
-    <p class="hint" style="margin-top:0.8rem;">合計はいずれの性別も100点満点です（ステータス小計＋身体的な特徴小計）。</p>
+    <p class="hint" style="margin-top:0.8rem;">
+      合計はいずれの性別も100点満点です（ステータス小計＋人柄小計＋身体的な特徴小計）。
+      男性はステータス、女性は身体的な特徴が最も大きい配点になっており、
+      「男性は経済力、女性は外見が重視されやすい」という傾向がグループ単位でも表れる配点にしています。
+    </p>
     <p class="hint">
       年齢は理想的な年齢を頂点とした山なりの倍率カーブで効きます。頂点から離れるほど、
       他の項目がどれだけ高得点でも最終スコアは緩やかに頭打ちになりますが、
@@ -173,16 +194,10 @@
             <option value="university_top">大学卒（早慶・旧帝大等の最難関）・大学院卒</option>
           </select>
         </label>
+      </div>
 
-        <label class="field">
-          <span>婚姻歴・子供の有無 <span class="field-weight" id="self-marital-weight"></span></span>
-          <select id="self-marital">
-            <option value="remarried_with_children_living">再婚・子供あり（同居）</option>
-            <option value="remarried_with_children_apart">再婚・子供あり（別居）</option>
-            <option value="remarried_no_children">再婚・子供なし</option>
-            <option value="first_marriage_no_children" selected>初婚・子供なし</option>
-          </select>
-        </label>
+      <div class="field-group">
+        <p class="field-group-label">人柄</p>
 
         <label class="field">
           <span>性格・コミュ力の自己評価: <b id="self-personality-value"></b> <span class="field-weight" id="self-personality-weight"></span></span>
@@ -290,16 +305,10 @@
             <option value="university_top">大学卒（早慶・旧帝大等の最難関）・大学院卒</option>
           </select>
         </label>
+      </div>
 
-        <label class="field">
-          <span>希望する婚姻歴・子供の有無 <span class="field-weight" id="partner-marital-weight"></span></span>
-          <select id="partner-marital">
-            <option value="remarried_with_children_living">再婚・子供あり（同居）</option>
-            <option value="remarried_with_children_apart">再婚・子供あり（別居）</option>
-            <option value="remarried_no_children">再婚・子供なし</option>
-            <option value="first_marriage_no_children" selected>初婚・子供なし</option>
-          </select>
-        </label>
+      <div class="field-group">
+        <p class="field-group-label">人柄</p>
 
         <label class="field">
           <span>希望する性格レベル: <b id="partner-personality-value"></b> <span class="field-weight" id="partner-personality-weight"></span></span>

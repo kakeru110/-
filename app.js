@@ -36,17 +36,17 @@ const MALE_JOB_TIERS = [
   { value: "freelance", label: "自営業・フリーランス", points: 4 },
   { value: "sme", label: "中小企業正社員（一般職）", points: 5 },
   { value: "corporate", label: "大手・中堅企業（総合職）", points: 6 },
-  { value: "public", label: "公務員・教員", points: 7 },
-  { value: "specialist", label: "医師・士業（弁護士・会計士等）", points: 8 },
+  { value: "public", label: "公務員・教員", points: 8 },
+  { value: "specialist", label: "医師・士業（弁護士・会計士等）", points: 9 },
 ];
 
 const FEMALE_JOB_TIERS = [
   { value: "student", label: "学生・無職・その他", points: 2 },
   { value: "nonregular", label: "契約・派遣・非正規（事務・販売等）", points: 4 },
-  { value: "sme", label: "中小企業正社員（一般事務等）", points: 5 },
-  { value: "corporate", label: "大手企業総合職・公務員・教員", points: 6 },
-  { value: "specialist", label: "看護師・薬剤師などの専門職", points: 7 },
-  { value: "glamour", label: "客室乗務員（CA）・アナウンサー・医師/士業", points: 9 },
+  { value: "sme", label: "中小企業正社員（一般事務等）", points: 6 },
+  { value: "corporate", label: "大手企業総合職・公務員・教員", points: 7 },
+  { value: "specialist", label: "看護師・薬剤師などの専門職", points: 8 },
+  { value: "glamour", label: "客室乗務員（CA）・アナウンサー・医師/士業", points: 10 },
 ];
 
 // 婚活市場で「学歴フィルター」としてよく言及される大学の序列（日東駒専・成成明学獨國武・
@@ -60,17 +60,6 @@ const MALE_EDUCATION_TIERS = [
   { value: "university_seimarch", label: "大学卒（成成明学獨國武）", points: 3 },
   { value: "university_march", label: "大学卒（MARCH・関関同立）", points: 4 },
   { value: "university_top", label: "大学卒（早慶・旧帝大等の最難関）・大学院卒", points: 5 },
-];
-
-// 婚姻歴・子供の有無。男女共通の項目として扱う。
-// 「初婚・子供なし」が母数としてはデフォルト（多数派）であり、婚姻歴があること自体が
-// 相対的に少数派・マイナス要因として扱われやすいという実態を踏まえ、初婚からの
-// 落差を大きめに設定（緩やかな段階配点ではなく、初婚以外は急落する形）。
-const MARITAL_TIERS = [
-  { value: "remarried_with_children_living", label: "再婚・子供あり（同居）", points: 1 },
-  { value: "remarried_with_children_apart", label: "再婚・子供あり（別居）", points: 2 },
-  { value: "remarried_no_children", label: "再婚・子供なし", points: 4 },
-  { value: "first_marriage_no_children", label: "初婚・子供なし", points: 9 },
 ];
 
 // 年齢は加点ではなく、最終スコア全体への倍率としてのみ効かせる。
@@ -128,28 +117,27 @@ function ageMultiplier(genderKey, age, rescueValue) {
 
 const CATEGORIES = {
   male: [
-    { key: "income", label: "年収", type: "income", cap: 30, max: 30, k: 700, unit: "万円", plausible: [0, 10000], group: "status" },
-    { key: "job", label: "職業・雇用形態", type: "discrete", max: 8, tiers: MALE_JOB_TIERS, group: "status" },
+    { key: "income", label: "年収", type: "income", cap: 33, max: 33, k: 700, unit: "万円", plausible: [0, 10000], group: "status" },
+    { key: "job", label: "職業・雇用形態", type: "discrete", max: 9, tiers: MALE_JOB_TIERS, group: "status" },
     { key: "education", label: "学歴", type: "discrete", max: 5, tiers: MALE_EDUCATION_TIERS, group: "status" },
-    { key: "marital", label: "婚姻歴・子供の有無", type: "discrete", max: 9, tiers: MARITAL_TIERS, group: "status" },
-    { key: "personality", label: "性格・コミュ力", type: "slider", max: 16, labels: PERSONALITY_LABELS, group: "status" },
-    { key: "height", label: "身長", type: "heightAsc", max: 13, floor: 3, anchor: 150, k: 15, unit: "cm", plausible: [150, 200], group: "physical" },
-    { key: "appearance", label: "顔立ち", type: "slider", max: 10, labels: APPEARANCE_LABELS, group: "physical" },
-    { key: "body", label: "体型", type: "slider", max: 9, labels: BODY_LABELS, group: "physical" },
+    { key: "personality", label: "性格・コミュ力", type: "slider", max: 18, labels: PERSONALITY_LABELS, group: "personality" },
+    { key: "height", label: "身長", type: "heightAsc", max: 14, floor: 3, anchor: 150, k: 15, unit: "cm", plausible: [150, 200], group: "physical" },
+    { key: "appearance", label: "顔立ち", type: "slider", max: 11, labels: APPEARANCE_LABELS, group: "physical" },
+    { key: "body", label: "体型", type: "slider", max: 10, labels: BODY_LABELS, group: "physical" },
   ],
   female: [
-    { key: "income", label: "年収", type: "income", cap: 10, max: 10, k: 500, unit: "万円", plausible: [0, 10000], group: "status" },
-    { key: "job", label: "職業・雇用形態", type: "discrete", max: 9, tiers: FEMALE_JOB_TIERS, group: "status" },
-    { key: "marital", label: "婚姻歴・子供の有無", type: "discrete", max: 9, tiers: MARITAL_TIERS, group: "status" },
-    { key: "personality", label: "性格・家庭的な面", type: "slider", max: 22, labels: PERSONALITY_LABELS, group: "status" },
-    { key: "appearance", label: "顔立ち", type: "slider", max: 26, labels: APPEARANCE_LABELS, group: "physical" },
-    { key: "body", label: "体型", type: "slider", max: 17, labels: BODY_LABELS, group: "physical" },
-    { key: "height", label: "身長", type: "gaussian", max: 7, floor: 3, peak: 158, sigma: 12, unit: "cm", plausible: [140, 185], group: "physical" },
+    { key: "income", label: "年収", type: "income", cap: 11, max: 11, k: 500, unit: "万円", plausible: [0, 10000], group: "status" },
+    { key: "job", label: "職業・雇用形態", type: "discrete", max: 10, tiers: FEMALE_JOB_TIERS, group: "status" },
+    { key: "personality", label: "性格・家庭的な面", type: "slider", max: 24, labels: PERSONALITY_LABELS, group: "personality" },
+    { key: "appearance", label: "顔立ち", type: "slider", max: 28, labels: APPEARANCE_LABELS, group: "physical" },
+    { key: "body", label: "体型", type: "slider", max: 19, labels: BODY_LABELS, group: "physical" },
+    { key: "height", label: "身長", type: "gaussian", max: 8, floor: 3, peak: 158, sigma: 12, unit: "cm", plausible: [140, 185], group: "physical" },
   ],
 };
 
 const CATEGORY_GROUPS = [
   { key: "status", label: "ステータス" },
+  { key: "personality", label: "人柄" },
   { key: "physical", label: "身体的な特徴" },
 ];
 
@@ -367,7 +355,6 @@ function readForm(prefix) {
       height: document.getElementById(`${prefix}-height`).value,
       job: document.getElementById(`${prefix}-job`).value,
       education: document.getElementById(`${prefix}-education`).value,
-      marital: document.getElementById(`${prefix}-marital`).value,
       appearance: document.getElementById(`${prefix}-appearance`).value,
       body: document.getElementById(`${prefix}-body`).value,
       personality: document.getElementById(`${prefix}-personality`).value,
@@ -400,7 +387,7 @@ function updateWeightBadges(prefix) {
   });
   const ageBadge = document.getElementById(`${prefix}-age-weight`);
   if (ageBadge) ageBadge.textContent = "倍率のみ（配点なし）";
-  ["height", "income", "job", "education", "marital", "appearance", "body", "personality"].forEach((key) => {
+  ["height", "income", "job", "education", "appearance", "body", "personality"].forEach((key) => {
     const badge = document.getElementById(`${prefix}-${key}-weight`);
     if (!badge) return;
     if (weightByKey[key] !== undefined) {
