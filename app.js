@@ -9,7 +9,9 @@
 const APPEARANCE_LABELS = [
   "かなり控えめ",
   "控えめ",
+  "やや控えめ",
   "普通",
+  "やや整っている",
   "整っている方",
   "かなり整っている",
 ];
@@ -17,7 +19,9 @@ const APPEARANCE_LABELS = [
 const BODY_LABELS = [
   "ふくよか",
   "ややふくよか",
+  "普通よりふっくら",
   "普通体型",
+  "やや引き締まっている",
   "引き締まっている",
   "スレンダー・スタイル良い",
 ];
@@ -25,28 +29,42 @@ const BODY_LABELS = [
 const PERSONALITY_LABELS = [
   "かなり要努力",
   "やや要努力",
+  "少し要努力",
   "普通",
+  "やや良好",
   "良好",
   "かなり良好",
 ];
 
+// 企業規模（中小・大手）と役割（一般職・総合職/管理職）を分けて拾えるよう、
+// また経営者・エンジニアなど元々抜けていた職種を追加して網羅性を高めた10段階。
 const MALE_JOB_TIERS = [
   { value: "student", label: "学生・無職・その他", points: 1 },
-  { value: "nonregular", label: "契約・派遣・非正規", points: 2 },
-  { value: "freelance", label: "自営業・フリーランス", points: 4 },
-  { value: "sme", label: "中小企業正社員（一般職）", points: 5 },
-  { value: "corporate", label: "大手・中堅企業（総合職）", points: 6 },
-  { value: "public", label: "公務員・教員", points: 8 },
+  { value: "nonregular", label: "契約・派遣・パート等", points: 2 },
+  { value: "freelance", label: "自営業・フリーランス", points: 3.5 },
+  { value: "sme", label: "中小企業正社員（一般職）", points: 4.5 },
+  { value: "corporate_general", label: "大手・中堅企業正社員（一般職）", points: 5.5 },
+  { value: "engineer", label: "ITエンジニアなどの専門職", points: 6.5 },
+  { value: "corporate", label: "大手・中堅企業（総合職）", points: 7 },
+  { value: "public", label: "公務員・教員", points: 7.5 },
+  { value: "executive", label: "経営者・会社役員", points: 8.5 },
   { value: "specialist", label: "医師・士業（弁護士・会計士等）", points: 9 },
 ];
 
+// 男性と同様に企業規模・役割の抜けと、自営業・経営者・専門技術職の不在を補った10段階。
+// 「客室乗務員・アナウンサー・医師/士業」を一括りにしていた最上位ティアも、
+// 経歴の性質が異なるため分割している。
 const FEMALE_JOB_TIERS = [
   { value: "student", label: "学生・無職・その他", points: 2 },
-  { value: "nonregular", label: "契約・派遣・非正規（事務・販売等）", points: 4 },
-  { value: "sme", label: "中小企業正社員（一般事務等）", points: 6 },
+  { value: "nonregular", label: "契約・派遣・パート等（事務・販売等）", points: 3 },
+  { value: "freelance", label: "自営業・フリーランス", points: 4.5 },
+  { value: "sme", label: "中小企業正社員（一般事務等）", points: 5.5 },
   { value: "corporate", label: "大手企業総合職・公務員・教員", points: 7 },
+  { value: "engineer", label: "ITエンジニアなどの専門職", points: 7.5 },
   { value: "specialist", label: "看護師・薬剤師などの専門職", points: 8 },
-  { value: "glamour", label: "客室乗務員（CA）・アナウンサー・医師/士業", points: 10 },
+  { value: "executive", label: "経営者・会社役員", points: 8.5 },
+  { value: "glamour", label: "客室乗務員（CA）・アナウンサー", points: 9 },
+  { value: "doctor", label: "医師・士業（弁護士・会計士等）", points: 10 },
 ];
 
 // 婚活市場で「学歴フィルター」としてよく言及される大学の序列（日東駒専・成成明学獨國武・
@@ -54,7 +72,7 @@ const FEMALE_JOB_TIERS = [
 const MALE_EDUCATION_TIERS = [
   { value: "middle", label: "中卒・高校中退", points: 0.5 },
   { value: "highschool", label: "高校卒", points: 1 },
-  { value: "vocational", label: "専門学校・短大卒", points: 1.5 },
+  { value: "vocational", label: "専門・短大・高専卒", points: 1.5 },
   { value: "university_low", label: "大学卒（日東駒専未満）", points: 2 },
   { value: "university_nittokomasen", label: "大学卒（日東駒専）", points: 2.5 },
   { value: "university_seimarch", label: "大学卒（成成明学獨國武）", points: 3 },
@@ -161,8 +179,9 @@ function scoreCategory(cat, rawValue) {
       return tier.points;
     }
     case "slider": {
-      const v = Math.min(5, Math.max(1, Number(rawValue) || 1));
-      return (v / 5) * cat.max;
+      const n = cat.labels.length;
+      const v = Math.min(n, Math.max(1, Number(rawValue) || 1));
+      return (v / n) * cat.max;
     }
     default:
       return 0;
@@ -303,9 +322,10 @@ function invertCategory(cat, ratio) {
       return `${best.label} 程度`;
     }
     case "slider": {
+      const n = cat.labels.length;
       const target = r * cat.max;
-      const level = Math.min(5, Math.max(1, Math.round((target / cat.max) * 5)));
-      return `${cat.labels[level - 1]}（レベル${level}/5）`;
+      const level = Math.min(n, Math.max(1, Math.round((target / cat.max) * n)));
+      return `${cat.labels[level - 1]}（レベル${level}/${n}）`;
     }
     default:
       return "-";

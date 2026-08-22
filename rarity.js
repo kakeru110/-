@@ -54,25 +54,32 @@ const FEMALE_INCOME_POINTS = [
 
 const MALE_JOB_TIERS = [
   { value: "student", label: "学生・無職・その他", share: 0.15 },
-  { value: "nonregular", label: "契約・派遣・非正規", share: 0.2 },
-  { value: "freelance", label: "自営業・フリーランス", share: 0.08 },
-  { value: "sme", label: "中小企業正社員（一般職）", share: 0.3 },
-  { value: "corporate", label: "大手・中堅企業（総合職）", share: 0.15 },
-  { value: "public", label: "公務員・教員", share: 0.07 },
-  { value: "specialist", label: "医師・士業（弁護士・会計士等）", share: 0.05 },
+  { value: "nonregular", label: "契約・派遣・パート等", share: 0.18 },
+  { value: "freelance", label: "自営業・フリーランス", share: 0.06 },
+  { value: "sme", label: "中小企業正社員（一般職）", share: 0.2 },
+  { value: "corporate_general", label: "大手・中堅企業正社員（一般職）", share: 0.12 },
+  { value: "engineer", label: "ITエンジニアなどの専門職", share: 0.1 },
+  { value: "corporate", label: "大手・中堅企業（総合職）", share: 0.08 },
+  { value: "public", label: "公務員・教員", share: 0.06 },
+  { value: "executive", label: "経営者・会社役員", share: 0.03 },
+  { value: "specialist", label: "医師・士業（弁護士・会計士等）", share: 0.02 },
 ];
 
 const FEMALE_JOB_TIERS = [
   { value: "student", label: "学生・無職・その他", share: 0.15 },
-  { value: "nonregular", label: "契約・派遣・非正規（事務・販売等）", share: 0.2 },
-  { value: "sme", label: "中小企業正社員（一般事務等）", share: 0.35 },
-  { value: "corporate", label: "大手企業総合職・公務員・教員", share: 0.18 },
+  { value: "nonregular", label: "契約・派遣・パート等（事務・販売等）", share: 0.2 },
+  { value: "freelance", label: "自営業・フリーランス", share: 0.05 },
+  { value: "sme", label: "中小企業正社員（一般事務等）", share: 0.27 },
+  { value: "corporate", label: "大手企業総合職・公務員・教員", share: 0.12 },
+  { value: "engineer", label: "ITエンジニアなどの専門職", share: 0.05 },
   { value: "specialist", label: "看護師・薬剤師などの専門職", share: 0.08 },
-  { value: "glamour", label: "客室乗務員（CA）・アナウンサー・医師/士業", share: 0.04 },
+  { value: "executive", label: "経営者・会社役員", share: 0.02 },
+  { value: "glamour", label: "客室乗務員（CA）・アナウンサー", share: 0.03 },
+  { value: "doctor", label: "医師・士業（弁護士・会計士等）", share: 0.03 },
 ];
 
-// レベル1〜5の人口分布（3=普通を中心とした山型を仮定）
-const LEVEL_SHARE = { 1: 0.1, 2: 0.2, 3: 0.4, 4: 0.2, 5: 0.1 };
+// レベル1〜7の人口分布（4=普通を中心とした山型を仮定）
+const LEVEL_SHARE = { 1: 0.03, 2: 0.09, 3: 0.2, 4: 0.36, 5: 0.2, 6: 0.09, 7: 0.03 };
 
 function erf(x) {
   const sign = x < 0 ? -1 : 1;
@@ -134,9 +141,9 @@ function jobFraction(genderKey, tierValue) {
 }
 
 function levelFraction(level) {
-  const lv = Math.max(1, Math.min(5, Number(level) || 1));
+  const lv = Math.max(1, Math.min(7, Number(level) || 1));
   let sum = 0;
-  for (let i = lv; i <= 5; i++) sum += LEVEL_SHARE[i];
+  for (let i = lv; i <= 7; i++) sum += LEVEL_SHARE[i];
   return sum;
 }
 

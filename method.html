@@ -302,41 +302,57 @@
     <h2>職業・学歴・外見・体型・性格の計算式</h2>
     <p class="hint">
       職業・学歴（学歴は男性のみ）はティア表から該当する得点を直接参照します。
-      外見・体型・性格は5段階の自己評価スライダーを、レベルにそのまま比例させて配点に換算します
-      （レベル1なら20%の点数、レベル3なら60%、レベル5なら満点）。
+      外見・体型・性格は7段階の自己評価スライダーを、レベルにそのまま比例させて配点に換算します
+      （レベル1なら約14%の点数、レベル4なら約57%、レベル7なら満点）。
     </p>
     <details class="formula-detail">
       <summary>📐 正確な計算式を見る</summary>
-      <div class="formula-box">スライダー系の得点 = （レベル ÷ 5）× 上限点</div>
+      <div class="formula-box">スライダー系の得点 = （レベル ÷ 7）× 上限点</div>
     </details>
 
     <p class="hint" style="margin-bottom:0.5rem;"><strong>男性の職業ティア（上限9点）</strong></p>
+    <p class="hint" style="margin-bottom:0.5rem;">
+      企業規模（中小・大手）と役割（一般職・総合職）を分けて拾えるよう、また経営者・エンジニアなど
+      元々当てはまる選択肢がなかった職種を追加した10段階です。
+    </p>
     <div class="weight-table-wrap">
       <table class="weight-table">
         <thead><tr><th scope="col">職業・雇用形態</th><th scope="col">得点</th></tr></thead>
         <tbody>
           <tr><th scope="row">学生・無職・その他</th><td>1点</td></tr>
-          <tr><th scope="row">契約・派遣・非正規</th><td>2点</td></tr>
-          <tr><th scope="row">自営業・フリーランス</th><td>4点</td></tr>
-          <tr><th scope="row">中小企業正社員（一般職）</th><td>5点</td></tr>
-          <tr><th scope="row">大手・中堅企業（総合職）</th><td>6点</td></tr>
-          <tr><th scope="row">公務員・教員</th><td>8点</td></tr>
+          <tr><th scope="row">契約・派遣・パート等</th><td>2点</td></tr>
+          <tr><th scope="row">自営業・フリーランス</th><td>3.5点</td></tr>
+          <tr><th scope="row">中小企業正社員（一般職）</th><td>4.5点</td></tr>
+          <tr><th scope="row">大手・中堅企業正社員（一般職）</th><td>5.5点</td></tr>
+          <tr><th scope="row">ITエンジニアなどの専門職</th><td>6.5点</td></tr>
+          <tr><th scope="row">大手・中堅企業（総合職）</th><td>7点</td></tr>
+          <tr><th scope="row">公務員・教員</th><td>7.5点</td></tr>
+          <tr><th scope="row">経営者・会社役員</th><td>8.5点</td></tr>
           <tr><th scope="row">医師・士業（弁護士・会計士等）</th><td>9点</td></tr>
         </tbody>
       </table>
     </div>
 
     <p class="hint" style="margin:1.2rem 0 0.5rem;"><strong>女性の職業ティア（上限10点）</strong></p>
+    <p class="hint" style="margin-bottom:0.5rem;">
+      男性と同様に企業規模・役割の抜けと、自営業・経営者・専門技術職の不在を補いました。
+      また「客室乗務員・アナウンサー・医師/士業」を一括りにしていた旧版の最上位ティアは、
+      経歴の性質が異なるため分割しています。
+    </p>
     <div class="weight-table-wrap">
       <table class="weight-table">
         <thead><tr><th scope="col">職業・雇用形態</th><th scope="col">得点</th></tr></thead>
         <tbody>
           <tr><th scope="row">学生・無職・その他</th><td>2点</td></tr>
-          <tr><th scope="row">契約・派遣・非正規（事務・販売等）</th><td>4点</td></tr>
-          <tr><th scope="row">中小企業正社員（一般事務等）</th><td>6点</td></tr>
+          <tr><th scope="row">契約・派遣・パート等（事務・販売等）</th><td>3点</td></tr>
+          <tr><th scope="row">自営業・フリーランス</th><td>4.5点</td></tr>
+          <tr><th scope="row">中小企業正社員（一般事務等）</th><td>5.5点</td></tr>
           <tr><th scope="row">大手企業総合職・公務員・教員</th><td>7点</td></tr>
+          <tr><th scope="row">ITエンジニアなどの専門職</th><td>7.5点</td></tr>
           <tr><th scope="row">看護師・薬剤師などの専門職</th><td>8点</td></tr>
-          <tr><th scope="row">客室乗務員（CA）・アナウンサー・医師/士業</th><td>10点</td></tr>
+          <tr><th scope="row">経営者・会社役員</th><td>8.5点</td></tr>
+          <tr><th scope="row">客室乗務員（CA）・アナウンサー</th><td>9点</td></tr>
+          <tr><th scope="row">医師・士業（弁護士・会計士等）</th><td>10点</td></tr>
         </tbody>
       </table>
     </div>
@@ -352,7 +368,7 @@
         <tbody>
           <tr><th scope="row">中卒・高校中退</th><td>0.5点</td></tr>
           <tr><th scope="row">高校卒</th><td>1点</td></tr>
-          <tr><th scope="row">専門学校・短大卒</th><td>1.5点</td></tr>
+          <tr><th scope="row">専門・短大・高専卒</th><td>1.5点</td></tr>
           <tr><th scope="row">大学卒（日東駒専未満）</th><td>2点</td></tr>
           <tr><th scope="row">大学卒（日東駒専）</th><td>2.5点</td></tr>
           <tr><th scope="row">大学卒（成成明学獨國武）</th><td>3点</td></tr>
@@ -517,7 +533,7 @@
       自分の最終スコアを100で割った比率 r を、相手の性別の各カテゴリに当てはめて逆算しています。
       年収と男性の身長（頭打ちの増加カーブ）は「r 相当の得点になる最低ライン」を対数計算で、
       女性の身長（山型カーブ）は「r 相当の得点になる範囲」を正規分布の等高線として、
-      職業・学歴は得点が最も近いティアを、外見・体型・性格は r に対応するレベル（1〜5）を、それぞれ表示しています。
+      職業・学歴は得点が最も近いティアを、外見・体型・性格は r に対応するレベル（1〜7）を、それぞれ表示しています。
       年齢だけは専用のロジックで、06章の倍率カーブを r で逆算し「倍率が r 以上になりやすい年齢範囲」を σLo・σHi 別に算出して表示しています（男性の年収・女性の顔立ちによるレスキュー分は含めない基準カーブでの目安です）。
       あくまで「同じくらいの得点バランスになりやすい目安」であり、厳密な最適化ではありません。
     </p>
