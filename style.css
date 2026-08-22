@@ -711,6 +711,18 @@ input[type="range"] {
   margin-top: 0.4rem;
 }
 
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-links .sep {
+  color: var(--rule-strong);
+}
+
 a {
   color: var(--accent);
 }
