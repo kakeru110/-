@@ -379,14 +379,33 @@ function toggleEducationRow(prefix) {
   row.hidden = gender !== "male";
 }
 
+// 年齢は加点を持たないため、固定の「倍率のみ」という文言だけでは何のことか
+// 伝わりにくい。代わりに、今入力されている年齢（と男性の年収／女性の顔立ちに
+// よるレスキュー分）から実際に計算される倍率の値をその場で表示する。
+function updateAgeMultiplierBadge(prefix) {
+  const genderInput = document.querySelector(`input[name="${prefix}-gender"]:checked`);
+  const badge = document.getElementById(`${prefix}-age-weight`);
+  if (!genderInput || !badge) return;
+  const gender = genderInput.value;
+  const age = document.getElementById(`${prefix}-age`).value;
+  let rescueValue = 0;
+  if (gender === "male") {
+    rescueValue = document.getElementById(`${prefix}-income`).value;
+  } else {
+    const appearanceCat = CATEGORIES.female.find((cat) => cat.key === "appearance");
+    rescueValue = scoreCategory(appearanceCat, document.getElementById(`${prefix}-appearance`).value);
+  }
+  const multiplier = ageMultiplier(gender, age, rescueValue);
+  badge.textContent = `現在の倍率 ×${multiplier.toFixed(2)}`;
+}
+
 function updateWeightBadges(prefix) {
   const gender = document.querySelector(`input[name="${prefix}-gender"]:checked`).value;
   const weightByKey = {};
   CATEGORIES[gender].forEach((cat) => {
     weightByKey[cat.key] = cat.max;
   });
-  const ageBadge = document.getElementById(`${prefix}-age-weight`);
-  if (ageBadge) ageBadge.textContent = "倍率のみ（配点なし）";
+  updateAgeMultiplierBadge(prefix);
   ["height", "income", "job", "education", "appearance", "body", "personality"].forEach((key) => {
     const badge = document.getElementById(`${prefix}-${key}-weight`);
     if (!badge) return;
@@ -574,6 +593,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("partner-appearance").addEventListener("input", updatePartnerLiveLabels);
   document.getElementById("partner-body").addEventListener("input", updatePartnerLiveLabels);
   document.getElementById("partner-personality").addEventListener("input", updatePartnerLiveLabels);
+
+  document.getElementById("self-age").addEventListener("input", () => updateAgeMultiplierBadge("self"));
+  document.getElementById("self-income").addEventListener("input", () => updateAgeMultiplierBadge("self"));
+  document.getElementById("self-appearance").addEventListener("input", () => updateAgeMultiplierBadge("self"));
+  document.getElementById("partner-age").addEventListener("input", () => updateAgeMultiplierBadge("partner"));
+  document.getElementById("partner-income").addEventListener("input", () => updateAgeMultiplierBadge("partner"));
+  document.getElementById("partner-appearance").addEventListener("input", () => updateAgeMultiplierBadge("partner"));
 
   document.getElementById("self-form").addEventListener("submit", handleSelfSubmit);
   document.getElementById("partner-form").addEventListener("submit", handlePartnerSubmit);
