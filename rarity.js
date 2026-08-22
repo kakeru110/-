@@ -159,10 +159,14 @@ function populateJobSelect() {
 
 function formatPercent(fraction) {
   const pct = fraction * 100;
+  if (pct <= 0) return "0%";
   if (pct >= 10) return `${pct.toFixed(1)}%`;
   if (pct >= 1) return `${pct.toFixed(2)}%`;
   if (pct >= 0.01) return `${pct.toFixed(3)}%`;
-  return `${pct.toExponential(1)}%`;
+  // ごく小さい値も指数表記（例: 9.2e-4%）は直感的でないため避け、
+  // 有効数字が見える桁まで0埋めした小数表示にする。
+  const decimals = Math.min(12, Math.max(3, Math.ceil(-Math.log10(pct)) + 1));
+  return `${pct.toFixed(decimals)}%`;
 }
 
 function formatCount(n) {
@@ -225,14 +229,25 @@ function handleSubmit(e) {
 
   const population = POPULATION_BASE[gender];
   const estimatedCount = population * combined;
+  const genderLabel = gender === "male" ? "男性" : "女性";
 
-  document.getElementById("rarity-count").textContent = formatCount(estimatedCount);
-  document.getElementById("rarity-sub").textContent =
-    rows.length === 0
-      ? "条件が選択されていません（全員が該当）"
-      : `${gender === "male" ? "男性" : "女性"}人口のおよそ ${formatPercent(combined)}`;
-  document.getElementById("rarity-odds").textContent =
-    combined > 0 ? `およそ ${Math.round(1 / combined).toLocaleString("ja-JP")} 人に1人の割合` : "";
+  if (rows.length === 0) {
+    document.getElementById("rarity-count").textContent = "全員が該当";
+    document.getElementById("rarity-sub").textContent = "条件が選択されていません";
+    document.getElementById("rarity-odds").textContent = `推定人数: ${formatCount(estimatedCount)}`;
+  } else if (combined <= 0) {
+    document.getElementById("rarity-count").textContent = "該当者なし";
+    document.getElementById("rarity-sub").textContent = "条件を満たす人がほぼいない設定です";
+    document.getElementById("rarity-odds").textContent = "";
+  } else {
+    // 「○人に1人」という比率表現を主役に。人数は実感が湧きにくいため、
+    // 割合ベースの表現（比率・パーセント）を先に、人数は補足として小さく添える。
+    document.getElementById("rarity-count").textContent =
+      `${Math.round(1 / combined).toLocaleString("ja-JP")}人に1人`;
+    document.getElementById("rarity-sub").textContent =
+      `${genderLabel}人口のおよそ ${formatPercent(combined)}`;
+    document.getElementById("rarity-odds").textContent = `推定人数: ${formatCount(estimatedCount)}`;
+  }
 
   const body = document.getElementById("rarity-breakdown-body");
   body.innerHTML = "";
