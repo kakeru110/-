@@ -91,46 +91,52 @@ const AGE_MULTIPLIER = {
 
 // 「女性は年齢がほぼ絶対条件、男性は年収が高ければ年齢の高さをある程度
 // カバーできる」という非対称な傾向を反映し、男性のみ年収に応じて
-// 倍率カーブのピーク年齢とフロアを引き上げる。女性側は年収による
-// 補正を行わない。
+// ピークを過ぎたあとの減衰（sigmaHi）を緩やかにし、フロアを引き上げる。
+// ピーク年齢そのものやピーク未満（若い側）の曲線は年収の影響を受けない
+// ——「年収が高いほど下がりにくくなる」であって「年収が高いほど
+// 若いうちの評価が下がる」にはならないようにするための設計。
 const MALE_AGE_INCOME_RESCUE = {
-  yearsPerManYen: 250, // 年収250万円ごとにピーク年齢+1歳
-  maxBonusYears: 12,
+  sigmaBonusPerManYen: 250, // 年収250万円ごとにsigmaHi(下降の緩やかさ)+1
+  maxSigmaBonus: 12,
   floorPerManYen: 15000, // 年収が高いほどフロアも底上げ
   floorCap: 0.6,
 };
 
 // 男性の年収レスキューと対になる仕組み。「美人は年齢を重ねても市場価値が
-// 保たれやすい」という傾向を反映し、顔立ちスコアが高い女性ほど倍率カーブの
-// ピーク年齢とフロアが引き上がる。外見が平均的な女性は今まで通り厳しいまま。
+// 保たれやすい」という傾向を反映し、顔立ちスコアが高い女性ほどピークを
+// 過ぎたあとの減衰が緩やかになり、フロアも引き上がる。ピーク未満（若い側）
+// の曲線は顔立ちスコアの影響を受けない。外見が平均的な女性は今まで通り厳しいまま。
 const FEMALE_AGE_APPEARANCE_RESCUE = {
-  pointsPerYear: 4, // 顔立ちスコア4点ごとにピーク年齢+1歳
-  maxBonusYears: 5,
+  sigmaBonusPerPoint: 4, // 顔立ちスコア4点ごとにsigmaHi(下降の緩やかさ)+1
+  maxSigmaBonus: 5,
   floorPerPoint: 0.006,
   floorCap: 0.3,
 };
 
 // 単峰の年齢倍率カーブ。ピーク年齢で倍率1、そこから離れるほど（下側はsigmaLo、
 // 上側はsigmaHiで）滑らかに減衰し、floorに漸近する。「安全窓」のような
-// 平坦区間は設けず、常にグラデーションがつく設計。
+// 平坦区間は設けず、常にグラデーションがつく設計。レスキュー加点（男性の
+// 年収・女性の顔立ち）はピーク位置そのものは動かさず、ピークを過ぎたあとの
+// sigmaHiとfloorだけを引き上げる。ピーク未満の年齢には常に影響しないため、
+// 「年収・顔立ちが高いほど若いうちの倍率が下がる」という逆転は起こらない。
 function ageMultiplier(genderKey, age, rescueValue) {
   const cfg = AGE_MULTIPLIER[genderKey];
   const a = Number(age) || 0;
-  let effectivePeak = cfg.peak;
+  let sigmaHi = cfg.sigmaHi;
   let floor = cfg.floor;
   if (genderKey === "male") {
     const inc = Math.max(0, Number(rescueValue) || 0);
     const r = MALE_AGE_INCOME_RESCUE;
-    effectivePeak += Math.min(r.maxBonusYears, inc / r.yearsPerManYen);
+    sigmaHi += Math.min(r.maxSigmaBonus, inc / r.sigmaBonusPerManYen);
     floor = Math.min(r.floorCap, cfg.floor + inc / r.floorPerManYen);
   } else if (genderKey === "female") {
     const app = Math.max(0, Number(rescueValue) || 0);
     const r = FEMALE_AGE_APPEARANCE_RESCUE;
-    effectivePeak += Math.min(r.maxBonusYears, app / r.pointsPerYear);
+    sigmaHi += Math.min(r.maxSigmaBonus, app / r.sigmaBonusPerPoint);
     floor = Math.min(r.floorCap, cfg.floor + app * r.floorPerPoint);
   }
-  const sigma = a < effectivePeak ? cfg.sigmaLo : cfg.sigmaHi;
-  return floor + (1 - floor) * Math.exp(-((a - effectivePeak) ** 2) / (2 * sigma * sigma));
+  const sigma = a < cfg.peak ? cfg.sigmaLo : sigmaHi;
+  return floor + (1 - floor) * Math.exp(-((a - cfg.peak) ** 2) / (2 * sigma * sigma));
 }
 
 const CATEGORIES = {
