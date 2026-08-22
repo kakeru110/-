@@ -108,6 +108,12 @@ function ageFraction(lo, hi) {
   return Math.max(0, Math.min(1, (b - a) / 40));
 }
 
+// 年齢の条件を指定しなかった場合の既定値。「20〜59歳なら誰でもよい」という
+// 設定は非現実的で、実際に出会おうとする相手は自分と近い年齢層（目安として
+// 前後5歳、10歳幅）に偏るため、無条件時もこの目安幅で絞り込んだものとして計算する。
+const DEFAULT_AGE_WINDOW_YEARS = 10;
+const DEFAULT_AGE_FRACTION = DEFAULT_AGE_WINDOW_YEARS / 40;
+
 function heightFraction(genderKey, thresholdCm) {
   const cfg = HEIGHT_DIST[genderKey];
   const z = ((Number(thresholdCm) || 0) - cfg.mean) / cfg.sd;
@@ -198,6 +204,16 @@ function handleSubmit(e) {
     const f = ageFraction(lo, hi);
     combined *= f;
     rows.push({ label: "年齢", desc: `${lo}〜${hi}歳`, fraction: f });
+  } else {
+    // 年齢を指定しない場合も「20〜59歳なら誰でもいい」という非現実的な設定には
+    // せず、現実的に出会おうとする範囲の目安（前後5歳程度、10歳幅）で
+    // 絞り込んだものとして計算する。
+    combined *= DEFAULT_AGE_FRACTION;
+    rows.push({
+      label: "年齢",
+      desc: `未指定（目安で${DEFAULT_AGE_WINDOW_YEARS}歳幅相当に絞って試算）`,
+      fraction: DEFAULT_AGE_FRACTION,
+    });
   }
   if (document.getElementById("c-income").checked) {
     const v = document.getElementById("income-min").value;
@@ -240,11 +256,7 @@ function handleSubmit(e) {
   const estimatedCount = population * combined;
   const genderLabel = gender === "male" ? "男性" : "女性";
 
-  if (rows.length === 0) {
-    document.getElementById("rarity-count").textContent = "全員が該当";
-    document.getElementById("rarity-sub").textContent = "条件が選択されていません";
-    document.getElementById("rarity-odds").textContent = `推定人数: ${formatCount(estimatedCount)}`;
-  } else if (combined <= 0) {
+  if (combined <= 0) {
     document.getElementById("rarity-count").textContent = "該当者なし";
     document.getElementById("rarity-sub").textContent = "条件を満たす人がほぼいない設定です";
     document.getElementById("rarity-odds").textContent = "";

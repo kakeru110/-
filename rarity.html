@@ -61,6 +61,10 @@
       <label class="field checkbox-field">
         <span><input type="checkbox" id="c-age"> 年齢にこだわる</span>
       </label>
+      <p class="hint" style="margin-top:-0.6rem;">
+        チェックしない場合も「20〜59歳なら誰でもいい」という非現実的な設定にはせず、
+        実際に出会おうとする範囲の目安として10歳幅（前後5歳程度）に絞って計算します。
+      </p>
       <div class="field range-row">
         <label>下限<input type="number" id="age-lo" min="20" max="59" value="25"></label>
         <label>上限<input type="number" id="age-hi" min="20" max="59" value="35"></label>
@@ -183,6 +187,7 @@
           <tr><th scope="row">母集団（20〜59歳・独身と仮定）</th><td>約1,250万人</td><td>約880万人</td></tr>
           <tr><th scope="row">身長の分布（平均・SD）</th><td>171cm・SD5.5</td><td>158cm・SD5.3</td></tr>
           <tr><th scope="row">年齢の分布</th><td colspan="2">20〜59歳に一様分布と仮定</td></tr>
+          <tr><th scope="row">年齢を指定しない場合</th><td colspan="2">目安で10歳幅に絞って計算</td></tr>
           <tr><th scope="row">顔立ち・体型・性格</th><td colspan="2">レベル4（普通）を中心とした山型分布と仮定</td></tr>
         </tbody>
       </table>
