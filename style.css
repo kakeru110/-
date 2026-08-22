@@ -227,6 +227,104 @@ body {
   margin: 0.8rem 0;
 }
 
+.formula-detail {
+  margin: 1rem 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  background: var(--paper);
+}
+
+.formula-detail summary {
+  cursor: pointer;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.02em;
+}
+
+.formula-detail summary:hover {
+  color: var(--accent);
+}
+
+.formula-detail[open] summary {
+  margin-bottom: 0.6rem;
+  color: var(--ink);
+}
+
+.formula-detail .formula-box {
+  margin: 0.6rem 0 0;
+}
+
+.curve-chart {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 0.9rem auto 0.3rem;
+}
+
+.curve-chart .axis {
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+
+.curve-chart .curve {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.curve-chart .curve-male {
+  stroke: var(--accent);
+}
+
+.curve-chart .curve-female {
+  stroke: var(--gold);
+}
+
+.curve-chart .peak-line {
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.curve-chart .tick-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 7.5px;
+  fill: var(--ink-muted);
+}
+
+.chart-legend {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  margin: 0 0 1.1rem;
+}
+
+.chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.chart-legend .dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.chart-legend .dot-male {
+  background: var(--accent);
+}
+
+.chart-legend .dot-female {
+  background: var(--gold);
+}
+
 .weight-table-wrap {
   overflow-x: auto;
 }
