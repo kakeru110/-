@@ -294,6 +294,45 @@ body {
   fill: var(--ink-muted);
 }
 
+.pop-chart {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: 0.9rem auto 0.3rem;
+}
+
+.pop-chart .axis {
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+
+.pop-chart .gridline {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.pop-chart .bar-total-male {
+  fill: var(--accent-soft);
+}
+
+.pop-chart .bar-unmarried-male {
+  fill: var(--accent);
+}
+
+.pop-chart .bar-total-female {
+  fill: var(--gold-soft);
+}
+
+.pop-chart .bar-unmarried-female {
+  fill: var(--gold);
+}
+
+.pop-chart .tick-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 7.5px;
+  fill: var(--ink-muted);
+}
+
 .chart-legend {
   display: flex;
   gap: 1.2rem;
