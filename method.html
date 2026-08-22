@@ -132,18 +132,38 @@
     <p class="eyebrow">04</p>
     <h2>身長の計算式（加点分）</h2>
     <p class="hint">
-      理想の値（ピーク）にどれだけ近いかで点数が決まる正規分布型のカーブです。ピークから離れるほど点数は下がりますが、
-      「フロア」を下回ることはありません。年齢はこのタイプの加点を持たず、06章の倍率としてのみ作用します。
+      内閣府ESRI『経済分析』第211号（鈴木・八代 2025）などの実証データでは、身長の好ましさの形が男女で非対称であることが示されています。
+      女性は男性から「平均かやや低め」で最も人気が高くなる<strong>山型</strong>の傾向があり、
+      男性は逆に「高いほど良い」という<strong>頭打ちの増加</strong>傾向（極端な高身長でも減点にはならない）が見られます。
+      そのため、女性の身長は年齢と同じ山型（正規分布型）カーブ、男性の身長は年収と同じ頭打ちの増加カーブを採用しています。
+      年齢自体はこのタイプの加点を持たず、06章の倍率としてのみ作用します。
     </p>
+
+    <p class="hint" style="margin-bottom:0.5rem;"><strong>男性の身長（頭打ちの増加カーブ）</strong></p>
+    <div class="formula-box">得点 = フロア +（上限点 − フロア）×（1 − e^（−（実測値 − 基準値） ÷ k））</div>
+    <div class="weight-table-wrap">
+      <table class="weight-table">
+        <thead>
+          <tr><th scope="col">項目</th><th scope="col">上限点</th><th scope="col">フロア</th><th scope="col">基準値</th><th scope="col">k</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">身長</th><td>15点</td><td>3点</td><td>150cm</td><td>15</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hint" style="margin-bottom:0;">
+      例: 160cm → 8.8点 / 170cm → 11.8点 / 178cm → 13.1点 / 190cm → 14.2点（基準値以下は一律フロアの3点）
+    </p>
+
+    <p class="hint" style="margin:1.2rem 0 0.5rem;"><strong>女性の身長（山型カーブ）</strong></p>
     <div class="formula-box">得点 = フロア +（上限点 − フロア）× e^（−（実測値 − ピーク）² ÷（2 × σ²））</div>
     <div class="weight-table-wrap">
       <table class="weight-table">
         <thead>
-          <tr><th scope="col">項目</th><th scope="col">性別</th><th scope="col">上限点</th><th scope="col">フロア</th><th scope="col">ピーク</th><th scope="col">σ</th></tr>
+          <tr><th scope="col">項目</th><th scope="col">上限点</th><th scope="col">フロア</th><th scope="col">ピーク</th><th scope="col">σ</th></tr>
         </thead>
         <tbody>
-          <tr><th scope="row">身長</th><td>男性</td><td>15点</td><td>3点</td><td>178cm</td><td>10</td></tr>
-          <tr><th scope="row">身長</th><td>女性</td><td>10点</td><td>4点</td><td>162cm</td><td>12</td></tr>
+          <tr><th scope="row">身長</th><td>10点</td><td>4点</td><td>158cm</td><td>12</td></tr>
         </tbody>
       </table>
     </div>
@@ -299,7 +319,8 @@
     <h2>「相応しい条件」の逆算ロジック</h2>
     <p class="hint" style="margin-bottom:0;">
       自分の最終スコアを100で割った比率 r を、相手の性別の各カテゴリに当てはめて逆算しています。
-      年収は「r 相当の得点になる最低ライン」を対数計算で、身長は「r 相当の得点になる範囲」を正規分布の等高線として、
+      年収と男性の身長（頭打ちの増加カーブ）は「r 相当の得点になる最低ライン」を対数計算で、
+      女性の身長（山型カーブ）は「r 相当の得点になる範囲」を正規分布の等高線として、
       職業・学歴・婚姻歴は得点が最も近いティアを、外見・体型・性格は r に対応するレベル（1〜5）を、それぞれ表示しています。
       年齢だけは専用のロジックで、06章の倍率カーブを r で逆算し「倍率が r 以上になりやすい年齢範囲」を σLo・σHi 別に算出して表示しています（男性の年収・女性の顔立ちによるレスキュー分は含めない基準カーブでの目安です）。
       あくまで「同じくらいの得点バランスになりやすい目安」であり、厳密な最適化ではありません。

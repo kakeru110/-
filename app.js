@@ -130,7 +130,7 @@ const CATEGORIES = {
     { key: "education", label: "学歴", type: "discrete", max: 10, tiers: MALE_EDUCATION_TIERS, group: "status" },
     { key: "marital", label: "婚姻歴・子供の有無", type: "discrete", max: 10, tiers: MARITAL_TIERS, group: "status" },
     { key: "personality", label: "性格・コミュ力", type: "slider", max: 5, labels: PERSONALITY_LABELS, group: "status" },
-    { key: "height", label: "身長", type: "gaussian", max: 15, floor: 3, peak: 178, sigma: 10, unit: "cm", plausible: [150, 200], group: "physical" },
+    { key: "height", label: "身長", type: "heightAsc", max: 15, floor: 3, anchor: 150, k: 15, unit: "cm", plausible: [150, 200], group: "physical" },
     { key: "appearance", label: "顔立ち", type: "slider", max: 10, labels: APPEARANCE_LABELS, group: "physical" },
     { key: "body", label: "体型", type: "slider", max: 5, labels: BODY_LABELS, group: "physical" },
   ],
@@ -141,7 +141,7 @@ const CATEGORIES = {
     { key: "personality", label: "性格・家庭的な面", type: "slider", max: 15, labels: PERSONALITY_LABELS, group: "status" },
     { key: "appearance", label: "顔立ち", type: "slider", max: 30, labels: APPEARANCE_LABELS, group: "physical" },
     { key: "body", label: "体型", type: "slider", max: 15, labels: BODY_LABELS, group: "physical" },
-    { key: "height", label: "身長", type: "gaussian", max: 10, floor: 4, peak: 162, sigma: 12, unit: "cm", plausible: [140, 185], group: "physical" },
+    { key: "height", label: "身長", type: "gaussian", max: 10, floor: 4, peak: 158, sigma: 12, unit: "cm", plausible: [140, 185], group: "physical" },
   ],
 };
 
@@ -159,6 +159,11 @@ function scoreCategory(cat, rawValue) {
     case "gaussian": {
       const v = Number(rawValue) || 0;
       return cat.floor + (cat.max - cat.floor) * Math.exp(-((v - cat.peak) ** 2) / (2 * cat.sigma * cat.sigma));
+    }
+    case "heightAsc": {
+      const v = Number(rawValue) || 0;
+      const diff = Math.max(0, v - cat.anchor);
+      return cat.floor + (cat.max - cat.floor) * (1 - Math.exp(-diff / cat.k));
     }
     case "discrete": {
       const tier = cat.tiers.find((t) => t.value === rawValue) || cat.tiers[0];
@@ -282,6 +287,16 @@ function invertCategory(cat, ratio) {
       lo = Math.max(cat.plausible[0], lo);
       hi = Math.min(cat.plausible[1], hi);
       return `${lo}〜${hi}${cat.unit}`;
+    }
+    case "heightAsc": {
+      const target = r * cat.max;
+      if (target <= cat.floor) {
+        return "特にこだわらなくても対象になりやすい範囲";
+      }
+      const inner = (target - cat.floor) / (cat.max - cat.floor);
+      const minHeight = cat.anchor - cat.k * Math.log(1 - inner);
+      const lo = Math.max(cat.plausible[0], Math.round(minHeight));
+      return `${lo}${cat.unit}以上が目安`;
     }
     case "discrete": {
       const target = r * cat.max;
