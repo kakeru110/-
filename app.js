@@ -63,10 +63,13 @@ const MALE_EDUCATION_TIERS = [
 ];
 
 // 婚姻歴・子供の有無。男女共通の項目として扱う。
+// 「初婚・子供なし」が母数としてはデフォルト（多数派）であり、婚姻歴があること自体が
+// 相対的に少数派・マイナス要因として扱われやすいという実態を踏まえ、初婚からの
+// 落差を大きめに設定（緩やかな段階配点ではなく、初婚以外は急落する形）。
 const MARITAL_TIERS = [
-  { value: "remarried_with_children_living", label: "再婚・子供あり（同居）", points: 2 },
-  { value: "remarried_with_children_apart", label: "再婚・子供あり（別居）", points: 4 },
-  { value: "remarried_no_children", label: "再婚・子供なし", points: 7 },
+  { value: "remarried_with_children_living", label: "再婚・子供あり（同居）", points: 1 },
+  { value: "remarried_with_children_apart", label: "再婚・子供あり（別居）", points: 2 },
+  { value: "remarried_no_children", label: "再婚・子供なし", points: 4 },
   { value: "first_marriage_no_children", label: "初婚・子供なし", points: 10 },
 ];
 
