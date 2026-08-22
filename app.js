@@ -125,25 +125,30 @@ function ageMultiplier(genderKey, age, rescueValue) {
 
 const CATEGORIES = {
   male: [
-    { key: "income", label: "年収", type: "income", cap: 35, max: 35, k: 700, unit: "万円", plausible: [0, 10000] },
-    { key: "height", label: "身長", type: "gaussian", max: 15, floor: 3, peak: 178, sigma: 10, unit: "cm", plausible: [150, 200] },
-    { key: "job", label: "職業・雇用形態", type: "discrete", max: 10, tiers: MALE_JOB_TIERS },
-    { key: "education", label: "学歴", type: "discrete", max: 10, tiers: MALE_EDUCATION_TIERS },
-    { key: "marital", label: "婚姻歴・子供の有無", type: "discrete", max: 10, tiers: MARITAL_TIERS },
-    { key: "appearance", label: "顔立ち", type: "slider", max: 10, labels: APPEARANCE_LABELS },
-    { key: "body", label: "体型", type: "slider", max: 5, labels: BODY_LABELS },
-    { key: "personality", label: "性格・コミュ力", type: "slider", max: 5, labels: PERSONALITY_LABELS },
+    { key: "income", label: "年収", type: "income", cap: 35, max: 35, k: 700, unit: "万円", plausible: [0, 10000], group: "status" },
+    { key: "job", label: "職業・雇用形態", type: "discrete", max: 10, tiers: MALE_JOB_TIERS, group: "status" },
+    { key: "education", label: "学歴", type: "discrete", max: 10, tiers: MALE_EDUCATION_TIERS, group: "status" },
+    { key: "marital", label: "婚姻歴・子供の有無", type: "discrete", max: 10, tiers: MARITAL_TIERS, group: "status" },
+    { key: "personality", label: "性格・コミュ力", type: "slider", max: 5, labels: PERSONALITY_LABELS, group: "status" },
+    { key: "height", label: "身長", type: "gaussian", max: 15, floor: 3, peak: 178, sigma: 10, unit: "cm", plausible: [150, 200], group: "physical" },
+    { key: "appearance", label: "顔立ち", type: "slider", max: 10, labels: APPEARANCE_LABELS, group: "physical" },
+    { key: "body", label: "体型", type: "slider", max: 5, labels: BODY_LABELS, group: "physical" },
   ],
   female: [
-    { key: "appearance", label: "顔立ち", type: "slider", max: 30, labels: APPEARANCE_LABELS },
-    { key: "body", label: "体型", type: "slider", max: 15, labels: BODY_LABELS },
-    { key: "height", label: "身長", type: "gaussian", max: 10, floor: 4, peak: 162, sigma: 12, unit: "cm", plausible: [140, 185] },
-    { key: "income", label: "年収", type: "income", cap: 10, max: 10, k: 500, unit: "万円", plausible: [0, 10000] },
-    { key: "job", label: "職業・雇用形態", type: "discrete", max: 10, tiers: FEMALE_JOB_TIERS },
-    { key: "marital", label: "婚姻歴・子供の有無", type: "discrete", max: 10, tiers: MARITAL_TIERS },
-    { key: "personality", label: "性格・家庭的な面", type: "slider", max: 15, labels: PERSONALITY_LABELS },
+    { key: "income", label: "年収", type: "income", cap: 10, max: 10, k: 500, unit: "万円", plausible: [0, 10000], group: "status" },
+    { key: "job", label: "職業・雇用形態", type: "discrete", max: 10, tiers: FEMALE_JOB_TIERS, group: "status" },
+    { key: "marital", label: "婚姻歴・子供の有無", type: "discrete", max: 10, tiers: MARITAL_TIERS, group: "status" },
+    { key: "personality", label: "性格・家庭的な面", type: "slider", max: 15, labels: PERSONALITY_LABELS, group: "status" },
+    { key: "appearance", label: "顔立ち", type: "slider", max: 30, labels: APPEARANCE_LABELS, group: "physical" },
+    { key: "body", label: "体型", type: "slider", max: 15, labels: BODY_LABELS, group: "physical" },
+    { key: "height", label: "身長", type: "gaussian", max: 10, floor: 4, peak: 162, sigma: 12, unit: "cm", plausible: [140, 185], group: "physical" },
   ],
 };
+
+const CATEGORY_GROUPS = [
+  { key: "status", label: "ステータス" },
+  { key: "physical", label: "身体的な特徴" },
+];
 
 function scoreCategory(cat, rawValue) {
   switch (cat.type) {
@@ -319,10 +324,11 @@ function invertAgeMultiplier(genderKey, ratio) {
 
 function suggestPartnerProfile(partnerGenderKey, ownScore) {
   const r = ownScore / 100;
-  const ageSuggestion = { label: "年齢", suggestion: invertAgeMultiplier(partnerGenderKey, r) };
+  const ageSuggestion = { label: "年齢", suggestion: invertAgeMultiplier(partnerGenderKey, r), group: "age" };
   const categorySuggestions = CATEGORIES[partnerGenderKey].map((cat) => ({
     label: cat.label,
     suggestion: invertCategory(cat, r),
+    group: cat.group,
   }));
   return [ageSuggestion, ...categorySuggestions];
 }
@@ -389,18 +395,29 @@ function updateWeightBadges(prefix) {
 
 function renderBreakdown(container, breakdown) {
   container.innerHTML = "";
-  breakdown.forEach((cat) => {
-    const row = document.createElement("div");
-    row.className = "bar-row";
-    const pct = Math.round((cat.points / cat.max) * 100);
-    row.innerHTML = `
-      <div class="bar-label">
-        <span>${cat.label}</span>
-        <span class="bar-points">${cat.points.toFixed(1)} / ${cat.max}</span>
-      </div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-    `;
-    container.appendChild(row);
+  CATEGORY_GROUPS.forEach((g) => {
+    const items = breakdown.filter((cat) => cat.group === g.key);
+    if (items.length === 0) return;
+    const groupEl = document.createElement("div");
+    groupEl.className = "breakdown-group";
+    const heading = document.createElement("p");
+    heading.className = "breakdown-group-label";
+    heading.textContent = g.label;
+    groupEl.appendChild(heading);
+    items.forEach((cat) => {
+      const row = document.createElement("div");
+      row.className = "bar-row";
+      const pct = Math.round((cat.points / cat.max) * 100);
+      row.innerHTML = `
+        <div class="bar-label">
+          <span>${cat.label}</span>
+          <span class="bar-points">${cat.points.toFixed(1)} / ${cat.max}</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      `;
+      groupEl.appendChild(row);
+    });
+    container.appendChild(groupEl);
   });
 }
 
@@ -498,13 +515,35 @@ function renderSuggestion() {
   if (ownScoreState === null || ownGenderState === null) return;
   const partnerGender = opposite(ownGenderState);
   const suggestions = suggestPartnerProfile(partnerGender, ownScoreState);
-  const list = document.getElementById("suggestion-list");
-  list.innerHTML = "";
-  suggestions.forEach((s) => {
-    const li = document.createElement("li");
-    li.innerHTML = `<span class="suggestion-label">${s.label}</span><span class="suggestion-value">${s.suggestion}</span>`;
-    list.appendChild(li);
+  const container = document.getElementById("suggestion-list");
+  container.innerHTML = "";
+
+  const buildList = (items) => {
+    const ul = document.createElement("ul");
+    ul.className = "suggestion-list";
+    items.forEach((s) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<span class="suggestion-label">${s.label}</span><span class="suggestion-value">${s.suggestion}</span>`;
+      ul.appendChild(li);
+    });
+    return ul;
+  };
+
+  const ageItems = suggestions.filter((s) => s.group === "age");
+  if (ageItems.length > 0) {
+    container.appendChild(buildList(ageItems));
+  }
+
+  CATEGORY_GROUPS.forEach((g) => {
+    const items = suggestions.filter((s) => s.group === g.key);
+    if (items.length === 0) return;
+    const heading = document.createElement("p");
+    heading.className = "breakdown-group-label";
+    heading.textContent = g.label;
+    container.appendChild(heading);
+    container.appendChild(buildList(items));
   });
+
   document.getElementById("suggestion-score").textContent = ownScoreState.toFixed(1);
   document.getElementById("suggestion-result").hidden = false;
 }

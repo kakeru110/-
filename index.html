@@ -52,6 +52,23 @@
       （身長は女性では相対的に重視度が低いため小さめの配点です）。
       年齢は加点ではなく、最終スコア全体にかかる<strong>倍率</strong>としてのみ効きます（下記参照）。
     </p>
+    <p class="field-group-label" style="margin-top:1.2rem;">年齢（配点なし・倍率のみ）</p>
+    <div class="weight-table-wrap">
+      <table class="weight-table">
+        <thead>
+          <tr>
+            <th scope="col">項目</th>
+            <th scope="col">男性</th>
+            <th scope="col">女性</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">年齢</th><td>倍率のみ</td><td>倍率のみ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="field-group-label">ステータス</p>
     <div class="weight-table-wrap">
       <table class="weight-table">
         <thead>
@@ -63,20 +80,38 @@
         </thead>
         <tbody>
           <tr><th scope="row">年収</th><td>35点</td><td>10点</td></tr>
-          <tr><th scope="row">年齢</th><td>倍率のみ（配点なし）</td><td>倍率のみ（配点なし）</td></tr>
-          <tr><th scope="row">顔立ち</th><td>10点</td><td>30点</td></tr>
-          <tr><th scope="row">体型</th><td>5点</td><td>15点</td></tr>
-          <tr><th scope="row">身長</th><td>15点</td><td>10点</td></tr>
           <tr><th scope="row">職業</th><td>10点</td><td>10点</td></tr>
           <tr><th scope="row">学歴</th><td>10点</td><td>—</td></tr>
           <tr><th scope="row">婚姻歴・子供の有無</th><td>10点</td><td>10点</td></tr>
           <tr><th scope="row">性格・家庭的な面</th><td>5点</td><td>15点</td></tr>
         </tbody>
         <tfoot>
-          <tr><th scope="row">合計</th><td>100点</td><td>100点</td></tr>
+          <tr><th scope="row">小計</th><td>70点</td><td>45点</td></tr>
         </tfoot>
       </table>
     </div>
+
+    <p class="field-group-label">身体的な特徴</p>
+    <div class="weight-table-wrap">
+      <table class="weight-table">
+        <thead>
+          <tr>
+            <th scope="col">項目</th>
+            <th scope="col">男性の配点</th>
+            <th scope="col">女性の配点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">顔立ち</th><td>10点</td><td>30点</td></tr>
+          <tr><th scope="row">体型</th><td>5点</td><td>15点</td></tr>
+          <tr><th scope="row">身長</th><td>15点</td><td>10点</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><th scope="row">小計</th><td>30点</td><td>55点</td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <p class="hint" style="margin-top:0.8rem;">合計はいずれの性別も100点満点です（ステータス小計＋身体的な特徴小計）。</p>
     <p class="hint">
       年齢は理想的な年齢を頂点とした山なりの倍率カーブで効きます。頂点から離れるほど、
       他の項目がどれだけ高得点でも最終スコアは緩やかに頭打ちになりますが、
@@ -103,67 +138,75 @@
         <input type="number" id="self-age" min="18" max="90" value="30" required>
       </label>
 
-      <label class="field">
-        <span>身長 (cm) <span class="field-weight" id="self-height-weight"></span></span>
-        <input type="number" id="self-height" min="130" max="220" value="170" required>
-      </label>
+      <div class="field-group">
+        <p class="field-group-label">ステータス</p>
 
-      <label class="field">
-        <span>年収 (万円) <span class="field-weight" id="self-income-weight"></span></span>
-        <input type="number" id="self-income" min="0" max="100000" step="10" value="400" required>
-      </label>
+        <label class="field">
+          <span>年収 (万円) <span class="field-weight" id="self-income-weight"></span></span>
+          <input type="number" id="self-income" min="0" max="100000" step="10" value="400" required>
+        </label>
 
-      <label class="field" id="self-job-row">
-        <span>職業・雇用形態 <span class="field-weight" id="self-job-weight"></span></span>
-        <select id="self-job">
-          <option value="student">学生・無職・その他</option>
-          <option value="nonregular">契約・派遣・非正規</option>
-          <option value="freelance">自営業・フリーランス</option>
-          <option value="sme" selected>中小企業正社員（一般職）</option>
-          <option value="corporate">大手・中堅企業（総合職）</option>
-          <option value="public">公務員・教員</option>
-          <option value="specialist">医師・士業（弁護士・会計士等）</option>
-        </select>
-      </label>
+        <label class="field" id="self-job-row">
+          <span>職業・雇用形態 <span class="field-weight" id="self-job-weight"></span></span>
+          <select id="self-job">
+            <option value="student">学生・無職・その他</option>
+            <option value="nonregular">契約・派遣・非正規</option>
+            <option value="freelance">自営業・フリーランス</option>
+            <option value="sme" selected>中小企業正社員（一般職）</option>
+            <option value="corporate">大手・中堅企業（総合職）</option>
+            <option value="public">公務員・教員</option>
+            <option value="specialist">医師・士業（弁護士・会計士等）</option>
+          </select>
+        </label>
 
-      <label class="field" id="self-education-row">
-        <span>学歴 <span class="field-weight" id="self-education-weight"></span></span>
-        <select id="self-education">
-          <option value="middle">中卒・高校中退</option>
-          <option value="highschool">高校卒</option>
-          <option value="vocational">専門学校・短大卒</option>
-          <option value="university_low">大学卒（日東駒専未満）</option>
-          <option value="university_nittokomasen">大学卒（日東駒専）</option>
-          <option value="university_seimarch" selected>大学卒（成成明学獨國武）</option>
-          <option value="university_march">大学卒（MARCH・関関同立）</option>
-          <option value="university_top">大学卒（早慶・旧帝大等の最難関）・大学院卒</option>
-        </select>
-      </label>
+        <label class="field" id="self-education-row">
+          <span>学歴 <span class="field-weight" id="self-education-weight"></span></span>
+          <select id="self-education">
+            <option value="middle">中卒・高校中退</option>
+            <option value="highschool">高校卒</option>
+            <option value="vocational">専門学校・短大卒</option>
+            <option value="university_low">大学卒（日東駒専未満）</option>
+            <option value="university_nittokomasen">大学卒（日東駒専）</option>
+            <option value="university_seimarch" selected>大学卒（成成明学獨國武）</option>
+            <option value="university_march">大学卒（MARCH・関関同立）</option>
+            <option value="university_top">大学卒（早慶・旧帝大等の最難関）・大学院卒</option>
+          </select>
+        </label>
 
-      <label class="field">
-        <span>婚姻歴・子供の有無 <span class="field-weight" id="self-marital-weight"></span></span>
-        <select id="self-marital">
-          <option value="remarried_with_children_living">再婚・子供あり（同居）</option>
-          <option value="remarried_with_children_apart">再婚・子供あり（別居）</option>
-          <option value="remarried_no_children">再婚・子供なし</option>
-          <option value="first_marriage_no_children" selected>初婚・子供なし</option>
-        </select>
-      </label>
+        <label class="field">
+          <span>婚姻歴・子供の有無 <span class="field-weight" id="self-marital-weight"></span></span>
+          <select id="self-marital">
+            <option value="remarried_with_children_living">再婚・子供あり（同居）</option>
+            <option value="remarried_with_children_apart">再婚・子供あり（別居）</option>
+            <option value="remarried_no_children">再婚・子供なし</option>
+            <option value="first_marriage_no_children" selected>初婚・子供なし</option>
+          </select>
+        </label>
 
-      <label class="field">
-        <span>顔立ちの自己評価: <b id="self-appearance-value"></b> <span class="field-weight" id="self-appearance-weight"></span></span>
-        <input type="range" id="self-appearance" min="1" max="5" value="3">
-      </label>
+        <label class="field">
+          <span>性格・コミュ力の自己評価: <b id="self-personality-value"></b> <span class="field-weight" id="self-personality-weight"></span></span>
+          <input type="range" id="self-personality" min="1" max="5" value="3">
+        </label>
+      </div>
 
-      <label class="field">
-        <span>体型の自己評価: <b id="self-body-value"></b> <span class="field-weight" id="self-body-weight"></span></span>
-        <input type="range" id="self-body" min="1" max="5" value="3">
-      </label>
+      <div class="field-group">
+        <p class="field-group-label">身体的な特徴</p>
 
-      <label class="field">
-        <span>性格・コミュ力の自己評価: <b id="self-personality-value"></b> <span class="field-weight" id="self-personality-weight"></span></span>
-        <input type="range" id="self-personality" min="1" max="5" value="3">
-      </label>
+        <label class="field">
+          <span>身長 (cm) <span class="field-weight" id="self-height-weight"></span></span>
+          <input type="number" id="self-height" min="130" max="220" value="170" required>
+        </label>
+
+        <label class="field">
+          <span>顔立ちの自己評価: <b id="self-appearance-value"></b> <span class="field-weight" id="self-appearance-weight"></span></span>
+          <input type="range" id="self-appearance" min="1" max="5" value="3">
+        </label>
+
+        <label class="field">
+          <span>体型の自己評価: <b id="self-body-value"></b> <span class="field-weight" id="self-body-weight"></span></span>
+          <input type="range" id="self-body" min="1" max="5" value="3">
+        </label>
+      </div>
 
       <button type="submit" class="btn-primary">診断する</button>
     </form>
@@ -193,7 +236,7 @@
     <p class="eyebrow">APPRAISED MATCH</p>
     <h2>スコア（<span id="suggestion-score">-</span>点）に見合う相手条件の目安</h2>
     <p class="hint">同じくらいの「市場価値の釣り合い」になりやすい、一般的な相手条件の目安です。</p>
-    <ul class="suggestion-list" id="suggestion-list"></ul>
+    <div id="suggestion-list"></div>
   </section>
 
   <!-- STEP 2: 相手に求める条件 -->
@@ -213,66 +256,74 @@
         <input type="number" id="partner-age" min="18" max="90" value="30" required>
       </label>
 
-      <label class="field">
-        <span>希望する身長 (cm) <span class="field-weight" id="partner-height-weight"></span></span>
-        <input type="number" id="partner-height" min="130" max="220" value="170" required>
-      </label>
+      <div class="field-group">
+        <p class="field-group-label">ステータス</p>
 
-      <label class="field">
-        <span>希望する年収 (万円・最低ライン) <span class="field-weight" id="partner-income-weight"></span></span>
-        <input type="number" id="partner-income" min="0" max="100000" step="10" value="400" required>
-      </label>
+        <label class="field">
+          <span>希望する年収 (万円・最低ライン) <span class="field-weight" id="partner-income-weight"></span></span>
+          <input type="number" id="partner-income" min="0" max="100000" step="10" value="400" required>
+        </label>
 
-      <label class="field" id="partner-job-row">
-        <span>希望する職業・雇用形態 <span class="field-weight" id="partner-job-weight"></span></span>
-        <select id="partner-job">
-          <option value="student">学生・無職・その他</option>
-          <option value="nonregular">契約・派遣・非正規（事務・販売等）</option>
-          <option value="sme" selected>中小企業正社員（一般事務等）</option>
-          <option value="corporate">大手企業総合職・公務員・教員</option>
-          <option value="specialist">看護師・薬剤師などの専門職</option>
-          <option value="glamour">客室乗務員（CA）・アナウンサー・医師/士業</option>
-        </select>
-      </label>
+        <label class="field" id="partner-job-row">
+          <span>希望する職業・雇用形態 <span class="field-weight" id="partner-job-weight"></span></span>
+          <select id="partner-job">
+            <option value="student">学生・無職・その他</option>
+            <option value="nonregular">契約・派遣・非正規（事務・販売等）</option>
+            <option value="sme" selected>中小企業正社員（一般事務等）</option>
+            <option value="corporate">大手企業総合職・公務員・教員</option>
+            <option value="specialist">看護師・薬剤師などの専門職</option>
+            <option value="glamour">客室乗務員（CA）・アナウンサー・医師/士業</option>
+          </select>
+        </label>
 
-      <label class="field" id="partner-education-row">
-        <span>希望する学歴 <span class="field-weight" id="partner-education-weight"></span></span>
-        <select id="partner-education">
-          <option value="middle">中卒・高校中退</option>
-          <option value="highschool">高校卒</option>
-          <option value="vocational">専門学校・短大卒</option>
-          <option value="university_low">大学卒（日東駒専未満）</option>
-          <option value="university_nittokomasen">大学卒（日東駒専）</option>
-          <option value="university_seimarch" selected>大学卒（成成明学獨國武）</option>
-          <option value="university_march">大学卒（MARCH・関関同立）</option>
-          <option value="university_top">大学卒（早慶・旧帝大等の最難関）・大学院卒</option>
-        </select>
-      </label>
+        <label class="field" id="partner-education-row">
+          <span>希望する学歴 <span class="field-weight" id="partner-education-weight"></span></span>
+          <select id="partner-education">
+            <option value="middle">中卒・高校中退</option>
+            <option value="highschool">高校卒</option>
+            <option value="vocational">専門学校・短大卒</option>
+            <option value="university_low">大学卒（日東駒専未満）</option>
+            <option value="university_nittokomasen">大学卒（日東駒専）</option>
+            <option value="university_seimarch" selected>大学卒（成成明学獨國武）</option>
+            <option value="university_march">大学卒（MARCH・関関同立）</option>
+            <option value="university_top">大学卒（早慶・旧帝大等の最難関）・大学院卒</option>
+          </select>
+        </label>
 
-      <label class="field">
-        <span>希望する婚姻歴・子供の有無 <span class="field-weight" id="partner-marital-weight"></span></span>
-        <select id="partner-marital">
-          <option value="remarried_with_children_living">再婚・子供あり（同居）</option>
-          <option value="remarried_with_children_apart">再婚・子供あり（別居）</option>
-          <option value="remarried_no_children">再婚・子供なし</option>
-          <option value="first_marriage_no_children" selected>初婚・子供なし</option>
-        </select>
-      </label>
+        <label class="field">
+          <span>希望する婚姻歴・子供の有無 <span class="field-weight" id="partner-marital-weight"></span></span>
+          <select id="partner-marital">
+            <option value="remarried_with_children_living">再婚・子供あり（同居）</option>
+            <option value="remarried_with_children_apart">再婚・子供あり（別居）</option>
+            <option value="remarried_no_children">再婚・子供なし</option>
+            <option value="first_marriage_no_children" selected>初婚・子供なし</option>
+          </select>
+        </label>
 
-      <label class="field">
-        <span>希望する顔立ちレベル: <b id="partner-appearance-value"></b> <span class="field-weight" id="partner-appearance-weight"></span></span>
-        <input type="range" id="partner-appearance" min="1" max="5" value="3">
-      </label>
+        <label class="field">
+          <span>希望する性格レベル: <b id="partner-personality-value"></b> <span class="field-weight" id="partner-personality-weight"></span></span>
+          <input type="range" id="partner-personality" min="1" max="5" value="3">
+        </label>
+      </div>
 
-      <label class="field">
-        <span>希望する体型レベル: <b id="partner-body-value"></b> <span class="field-weight" id="partner-body-weight"></span></span>
-        <input type="range" id="partner-body" min="1" max="5" value="3">
-      </label>
+      <div class="field-group">
+        <p class="field-group-label">身体的な特徴</p>
 
-      <label class="field">
-        <span>希望する性格レベル: <b id="partner-personality-value"></b> <span class="field-weight" id="partner-personality-weight"></span></span>
-        <input type="range" id="partner-personality" min="1" max="5" value="3">
-      </label>
+        <label class="field">
+          <span>希望する身長 (cm) <span class="field-weight" id="partner-height-weight"></span></span>
+          <input type="number" id="partner-height" min="130" max="220" value="170" required>
+        </label>
+
+        <label class="field">
+          <span>希望する顔立ちレベル: <b id="partner-appearance-value"></b> <span class="field-weight" id="partner-appearance-weight"></span></span>
+          <input type="range" id="partner-appearance" min="1" max="5" value="3">
+        </label>
+
+        <label class="field">
+          <span>希望する体型レベル: <b id="partner-body-value"></b> <span class="field-weight" id="partner-body-weight"></span></span>
+          <input type="range" id="partner-body" min="1" max="5" value="3">
+        </label>
+      </div>
 
       <button type="submit" class="btn-primary">釣り合いをチェック</button>
     </form>
