@@ -16,6 +16,28 @@ const HEIGHT_DIST = {
   female: { mean: 158, sd: 5.3 },
 };
 
+// 都道府県別の人口（万人単位、2023年ごろの推計値をもとにした概算）。
+// 母集団を都道府県で絞り込む際の按分に使う。年齢分布・未婚率は全国一律と仮定しており、
+// 実際の地域差（都市部ほど未婚率が高い傾向など）までは反映していない。
+const PREFECTURE_POPULATION = [
+  ["北海道", 509], ["青森県", 116], ["岩手県", 115], ["宮城県", 226], ["秋田県", 89],
+  ["山形県", 102], ["福島県", 175], ["茨城県", 282], ["栃木県", 188], ["群馬県", 190],
+  ["埼玉県", 734], ["千葉県", 627], ["東京都", 1404], ["神奈川県", 923], ["新潟県", 213],
+  ["富山県", 100], ["石川県", 109], ["福井県", 73], ["山梨県", 79], ["長野県", 200],
+  ["岐阜県", 193], ["静岡県", 355], ["愛知県", 750], ["三重県", 172], ["滋賀県", 140],
+  ["京都府", 254], ["大阪府", 878], ["兵庫県", 543], ["奈良県", 128], ["和歌山県", 87],
+  ["鳥取県", 53], ["島根県", 64], ["岡山県", 184], ["広島県", 274], ["山口県", 129],
+  ["徳島県", 69], ["香川県", 91], ["愛媛県", 128], ["高知県", 65], ["福岡県", 511],
+  ["佐賀県", 78], ["長崎県", 124], ["熊本県", 170], ["大分県", 107], ["宮崎県", 104],
+  ["鹿児島県", 155], ["沖縄県", 147],
+];
+const PREFECTURE_TOTAL = PREFECTURE_POPULATION.reduce((sum, [, pop]) => sum + pop, 0);
+
+function prefectureFraction(name) {
+  const entry = PREFECTURE_POPULATION.find(([n]) => n === name);
+  return entry ? entry[1] / PREFECTURE_TOTAL : 1;
+}
+
 // [年収の下限(万円), その額以上を稼ぐ人口割合] のポイント列。区間は対数線形補間、
 // 最後尾を超える場合は最終区間の減衰率で外挿する。
 const MALE_INCOME_POINTS = [
@@ -214,6 +236,12 @@ function handleSubmit(e) {
       desc: `未指定（目安で${DEFAULT_AGE_WINDOW_YEARS}歳幅相当に絞って試算）`,
       fraction: DEFAULT_AGE_FRACTION,
     });
+  }
+  if (document.getElementById("c-pref").checked) {
+    const pref = document.getElementById("pref-select").value;
+    const f = prefectureFraction(pref);
+    combined *= f;
+    rows.push({ label: "都道府県", desc: `${pref}在住`, fraction: f });
   }
   if (document.getElementById("c-income").checked) {
     const v = document.getElementById("income-min").value;
