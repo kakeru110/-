@@ -39,6 +39,28 @@
 <body>
 <div class="sheet">
 
+  <div class="topbar">
+    <a class="topbar-logo" href="index.html">
+      <svg viewBox="0 0 64 64" width="20" height="20" aria-hidden="true">
+        <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M32 20 L36 29 L46 30 L38.5 37 L40.5 47 L32 42 L23.5 47 L25.5 37 L18 30 L28 29 Z" fill="currentColor"/>
+      </svg>
+      査定ツール
+    </a>
+    <details class="topbar-menu">
+      <summary aria-label="メニューを開く">☰</summary>
+      <nav class="topbar-menu-panel">
+        <a href="rarity.html" class="current">希少度チェック</a>
+        <p class="topbar-menu-group-label">解説・データ</p>
+        <a href="method.html">算出方法</a>
+        <a href="example-normal-man.html">「普通の男性」の例</a>
+        <a href="population.html">母集団データ</a>
+        <hr class="topbar-menu-sep">
+        <a href="contact.html">お問い合わせ</a>
+      </nav>
+    </details>
+  </div>
+
   <header class="masthead">
     <div class="seal-mark" aria-hidden="true">
       <svg viewBox="0 0 64 64" width="40" height="40">
@@ -51,20 +73,6 @@
     <h1>理想の相手、実際どれくらいいる？</h1>
     <p class="subtitle">求める条件をすべて満たす異性が、同性人口のどれくらいの割合・人数いそうかを推定します</p>
   </header>
-
-  <nav class="site-nav">
-    <a href="index.html">査定ツール</a>
-    <span class="sep">|</span>
-    <a href="method.html">算出方法</a>
-    <span class="sep">|</span>
-    <span class="current">希少度チェック</span>
-    <span class="sep">|</span>
-    <a href="example-normal-man.html">「普通の男性」の例</a>
-    <span class="sep">|</span>
-    <a href="population.html">母集団データ</a>
-    <span class="sep">|</span>
-    <a href="contact.html">お問い合わせ</a>
-  </nav>
 
   <section class="disclaimer">
     <strong>本ページについて:</strong>
@@ -319,6 +327,7 @@
   </footer>
 
 </div>
+<script src="nav.js" defer></script>
 <script src="rarity.js"></script>
 </body>
 </html>
